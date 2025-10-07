@@ -71,66 +71,35 @@
     /* === TOP HEADER === */
     .game-header {
       flex-shrink: 0;
-      background: rgba(0, 0, 0, 0.95);
-      border: none;
-      border-bottom: 3px solid #dcee2d;
+      background: #000;
+      border: 2px solid #dcee2d;
+      border-bottom: 2px solid #dcee2d;
       padding: 0;
       z-index: 100;
       display: none;
       pointer-events: all;
+      position: relative;
     }
 
-    .header-title-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(101, 101, 101, 0.95);
-      padding: 3px 22px;
-      height: 91px;
-    }
-
-    .game-title {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 60px;
-      color: #dcee2d;
-      letter-spacing: -0.66px;
-      line-height: 1.5;
-    }
-
-    .game-level-container {
+    /* Sección superior del header: logo centrado */
+    .header-top-section {
+      background: #000;
+      height: 109px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
     }
 
-    .level-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 40px;
-      color: #dcee2d;
-      letter-spacing: -0.44px;
-      line-height: 1.5;
+    .logo-top {
+      height: 68px;
+      width: 132px;
+      object-fit: contain;
     }
 
-    .level-number {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 70px;
-      color: #dcee2d;
-      letter-spacing: -0.77px;
-      line-height: 1.5;
-    }
-
-    .yellow-separator {
+    /* Color zones en la parte inferior del header */
+    .color-zones-row {
+      display: flex;
       width: 100%;
-      height: 3px;
-      background: #dcee2d;
-    }
-
-    .color-zones {
-      display: flex;
-      height: 73px;
     }
 
     .zone {
@@ -139,42 +108,30 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      opacity: 0.7;
+      height: 55px;
     }
 
     .zone-text {
       font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
+      font-weight: 500;
       font-size: 42px;
-      letter-spacing: -0.462px;
+      letter-spacing: 0.84px;
       line-height: 1.5;
       z-index: 2;
       position: relative;
-      mix-blend-mode: color-dodge;
+      color: #211f23;
     }
 
     .zone-red {
-      background: #cf4526;
-    }
-
-    .zone-red .zone-text {
-      color: #cf4526;
+      background: #fe4143;
     }
 
     .zone-blue {
-      background: #21b1f8;
-    }
-
-    .zone-blue .zone-text {
-      color: #21b1f8;
+      background: #60defd;
     }
 
     .zone-green {
-      background: #47ebcd;
-    }
-
-    .zone-green .zone-text {
-      color: #47ebcd;
+      background: #45fe57;
     }
 
     /* === ESPACIO CENTRAL (transparente para ver Three.js) === */
@@ -186,9 +143,9 @@
     /* === BOTTOM FOOTER === */
     .game-footer {
       flex-shrink: 0;
-      background: rgba(33, 31, 35, 0.95);
-      border: none;
-      border-top: 3px solid #dcee2d;
+      background: #211f23;
+      border: 2px solid #dcee2d;
+      border-top: 2px solid #dcee2d;
       height: 250px;
       z-index: 100;
       display: none;
@@ -197,81 +154,87 @@
       pointer-events: all;
     }
 
-    /* === YELLOW BONUS INDICATOR (EN EL FOOTER) === */
-    .yellow-bonus-indicator {
-      display: none;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      margin-left: 250px;
-    }
-
-    .yellow-bonus-indicator.active {
-      display: flex;
-      animation: bonusPulse 1s ease-in-out infinite;
-    }
-
-    @keyframes bonusPulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-      }
-    }
-
-    .bonus-text {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: 50px;
-      color: #dcee2d;
-      letter-spacing: -0.55px;
-      line-height: 1.5;
-    }
-
     .footer-content {
       position: relative;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       width: 100%;
-      max-width: 800px;
-      padding: 0 96px;
+      padding: 0;
     }
 
+    /* Score a la izquierda */
     .score-display {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      padding-left: 88px;
+      flex: 0 0 auto;
     }
 
     .score-label {
       font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
+      font-weight: 300;
       font-size: 50px;
       color: #dcee2d;
       letter-spacing: -0.55px;
       line-height: 1.5;
-      margin-bottom: 4px;
+      margin-bottom: -8px;
     }
 
     .score-value {
       font-family: 'DM Sans', sans-serif;
       font-weight: 500;
       font-size: 100px;
-      color: #656565;
       letter-spacing: -1.1px;
       line-height: 1.5;
     }
 
-    .arrow-indicator {
-      position: absolute;
-      right: 96px;
+    .score-gray {
+      color: #656565;
+    }
+
+    .score-yellow {
+      color: #dcee2d;
+    }
+
+    /* Logo en el centro */
+    .footer-logo {
       display: flex;
       align-items: center;
       justify-content: center;
+      flex: 1;
+    }
+
+    /* Level a la derecha con fondo amarillo */
+    .level-display-footer {
+      background: #dcee2d;
+      height: 250px;
+      width: 224px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .level-label-footer {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 50px;
+      color: #211f23;
+      letter-spacing: -0.55px;
+      line-height: 1.5;
+      margin-bottom: -8px;
+    }
+
+    .level-number-footer {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 100px;
+      color: #211f23;
+      letter-spacing: -1.1px;
+      line-height: 1.5;
     }
 
     /* === LOGO CON EFECTO DE LLENADO === */
@@ -587,23 +550,21 @@
     <div class="game-ui-container">
       <!-- HEADER -->
       <div id="game-header" class="game-header">
-        <div class="header-title-section">
-          <div class="game-title">TETRIS</div>
-          <div class="game-level-container">
-            <span class="level-label">LEVEL</span>
-            <span id="level-number" class="level-number">01</span>
-          </div>
+        <!-- Sección superior: fondo negro con logo centrado -->
+        <div class="header-top-section">
+          <img src="logo.png" alt="Hygrid" class="logo-top">
         </div>
-        <div class="yellow-separator"></div>
-        <div class="color-zones">
+        
+        <!-- Color zones debajo -->
+        <div class="color-zones-row">
           <div class="zone zone-red">
-            <span class="zone-text">RED ZONE</span>
+            <span class="zone-text">PUBLIC</span>
           </div>
           <div class="zone zone-blue">
-            <span class="zone-text">BLUE ZONE</span>
+            <span class="zone-text">PRIVATE</span>
           </div>
           <div class="zone zone-green">
-            <span class="zone-text">GREEN ZONE</span>
+            <span class="zone-text">ON PREM</span>
           </div>
         </div>
       </div>
@@ -614,21 +575,28 @@
       <!-- FOOTER -->
       <div id="game-footer" class="game-footer">
         <div class="footer-content">
+          <!-- Score a la izquierda -->
           <div class="score-display">
-            <div class="score-label">SCORE</div>
-            <div id="current-score" class="score-value">0000000</div>
+            <div class="score-label">Score</div>
+            <div id="current-score" class="score-value">
+              <span class="score-gray">000</span><span class="score-yellow">1250</span>
+            </div>
           </div>
-          <div id="yellow-bonus-indicator" class="yellow-bonus-indicator">
-            <div class="bonus-text">BONUS MODE</div>
-            <div id="bonus-timer" class="bonus-text">5s</div>
-          </div>
-          <div class="arrow-indicator">
+          
+          <!-- Logo en el centro -->
+          <div class="footer-logo">
             <div class="logo-container">
               <div id="logo-fill-wrapper" class="logo-fill-wrapper">
                 <img src="./union-logo-full.svg" alt="Logo Fill" class="logo-fill">
               </div>
               <img src="./union-logo-filled.svg" alt="Logo Base" class="logo-base">
             </div>
+          </div>
+          
+          <!-- Level a la derecha con fondo amarillo -->
+          <div class="level-display-footer">
+            <div class="level-label-footer">Level</div>
+            <div id="level-number-footer" class="level-number-footer">000</div>
           </div>
         </div>
       </div>
@@ -732,9 +700,10 @@
 
     // === SISTEMA DE NIVEL ===
     window.updateLevel = function(level) {
-      const levelElement = document.getElementById('level-number');
-      if (!levelElement) return;
-      levelElement.textContent = level.toString().padStart(2, '0');
+      const levelFooter = document.getElementById('level-number-footer');
+      if (levelFooter) {
+        levelFooter.textContent = level.toString().padStart(3, '0');
+      }
     };
 
     // === SISTEMA DE MÚSICA (MIDI PLAYER) ===

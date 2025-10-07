@@ -220,7 +220,12 @@ class GameStateManager {
         if (!this.gameFooter || !window.tetrisGame) return;
         const scoreElement = document.getElementById('current-score');
         if (scoreElement) {
-            scoreElement.textContent = window.tetrisGame.score.toString().padStart(7, '0');
+            const scoreStr = window.tetrisGame.score.toString().padStart(7, '0');
+            // Últimos 4 dígitos en amarillo, primeros 3 en gris
+            const grayPart = scoreStr.slice(0, 3);
+            const yellowPart = scoreStr.slice(3);
+            scoreElement.innerHTML = `<span class="score-gray">${grayPart}</span><span class="score-yellow">${yellowPart}</span>`;
+            
             if (typeof window.updateLogoFill === 'function') {
                 // Calcular el progreso hacia el próximo power-up (score desde el último power-up)
                 const progressScore = window.tetrisGame.score - window.tetrisGame.lastYellowModeScore;
