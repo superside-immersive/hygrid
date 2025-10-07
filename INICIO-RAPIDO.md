@@ -36,21 +36,35 @@ npx http-server
 
 ```
 clean/
-├── index.html              ← HTML principal
+├── index.html              ← HTML principal (refactorizado)
 ├── README.md               ← Documentación
 │
-├── src/                    ← TODO EL CÓDIGO JS
+├── src/                    ← TODO EL CÓDIGO
 │   ├── main.js            ← Punto de entrada
-│   ├── core/
+│   │
+│   ├── core/              ← Lógica del juego
 │   │   ├── App.js
 │   │   └── TetrisGame.js
-│   ├── scenes/
+│   │
+│   ├── scenes/            ← Escenas 3D
 │   │   └── IdleScene.js
-│   └── managers/
-│       └── GameStateManager.js
+│   │
+│   ├── managers/          ← Gestores de estado
+│   │   └── GameStateManager.js
+│   │
+│   ├── ui/                ← Controladores UI
+│   │   └── UIController.js
+│   │
+│   ├── audio/             ← Controladores Audio
+│   │   └── AudioController.js
+│   │
+│   └── styles/            ← Estilos CSS
+│       ├── main.css
+│       ├── ui.css
+│       └── overlays.css
 │
 ├── assets/                 ← RECURSOS
-│   ├── images/            ← Texturas y logos
+│   ├── images/            ← Texturas, logos, SVGs
 │   └── audio/             ← Sistema MIDI
 │       └── midiplayer/
 │
@@ -79,13 +93,24 @@ clean/
 
 ## ✅ Verificación
 
-**Todos los archivos JS ahora están en `src/`:**
+**Código completamente organizado:**
 - ✅ `src/main.js` - Entry point
-- ✅ `src/core/` - Lógica principal
+- ✅ `src/core/` - Lógica principal del juego
 - ✅ `src/scenes/` - Escenas 3D
 - ✅ `src/managers/` - Gestores de estado
+- ✅ `src/ui/` - Controladores de interfaz
+- ✅ `src/audio/` - Controladores de audio
+- ✅ `src/styles/` - Estilos CSS separados
 
 **Solo excepción:** `assets/audio/midiplayer/*.js` (librerías MIDI externas)
+
+## 🎨 Refactorización HTML/CSS
+
+**index.html reducido de 1062 → 140 líneas**
+- CSS extraído a archivos separados
+- JavaScript UI/Audio en controladores
+- SVGs profesionales para overlays
+- Ver `docs/LOG/REFACTORIZACION-HTML-CSS.md` para detalles
 
 ---
 
