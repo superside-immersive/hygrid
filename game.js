@@ -628,9 +628,9 @@ class TetrisGame {
     
     createBackground() {
         // Crear grilla coloreada por zonas con efecto neón
-        const RED_ZONE_COLOR = 0xcf4526;
-        const BLUE_ZONE_COLOR = 0x21b1f8;
-        const GREEN_ZONE_COLOR = 0x47ebcd;
+        const RED_ZONE_COLOR = 0xCF4526;
+        const BLUE_ZONE_COLOR = 0x60DEFD;
+        const GREEN_ZONE_COLOR = 0x45FE57;
         
         // Líneas horizontales
         for (let y = 0; y <= this.boardHeight; y++) {
@@ -1223,9 +1223,9 @@ class TetrisGame {
     
     getColorByNumber(color) {
         switch (color) {
-            case this.RED_COLOR: return 0xcf4526;
-            case this.BLUE_COLOR: return 0x21b1f8;
-            case this.GREEN_COLOR: return 0x47ebcd;
+            case this.RED_COLOR: return 0xCF4526;
+            case this.BLUE_COLOR: return 0x60DEFD;
+            case this.GREEN_COLOR: return 0x45FE57;
             case this.GRAY_COLOR: return 0x656565;
             default: return 0x656565;
         }
@@ -1299,9 +1299,9 @@ class TetrisGame {
         // Comparar colores
         const colorHex = color.getHex();
         
-        if (colorHex === 0xcf4526) return this.RED_COLOR;
-        if (colorHex === 0x21b1f8) return this.BLUE_COLOR;
-        if (colorHex === 0x47ebcd) return this.GREEN_COLOR;
+        if (colorHex === 0xCF4526) return this.RED_COLOR;
+        if (colorHex === 0x60DEFD) return this.BLUE_COLOR;
+        if (colorHex === 0x45FE57) return this.GREEN_COLOR;
         if (colorHex === 0x656565) return this.GRAY_COLOR;
         if (colorHex === this.YELLOW_COLOR_HEX) {
             // Si es amarillo, devolver el color original guardado
