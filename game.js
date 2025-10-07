@@ -2,7 +2,8 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 
 // ==================== GAME STATE MANAGER ====================
 class GameStateManager {
-    constructor() {
+    constructor(idleScene) {
+        this.idleScene = idleScene;
         this.currentState = 'idle';
         this.stateTimer = 0;
         this.scoreboardTimer = 0;
@@ -134,16 +135,19 @@ class GameStateManager {
     showIdleScreen() {
         this.hideGameUI();
         if (this.idleScreen) this.idleScreen.style.display = 'flex';
+        if (this.idleScene) this.idleScene.show();
     }
     
     showIntroScreen() {
         this.hideGameUI();
         if (this.introScreen) this.introScreen.style.display = 'flex';
         this.showCountdown();
+        if (this.idleScene) this.idleScene.hide();
     }
     
     showGameScreen() {
         this.showGameUI();
+        if (this.idleScene) this.idleScene.hide();
     }
     
     showGameOverScreen() {
@@ -272,6 +276,167 @@ class GameStateManager {
             emptyMessage.textContent = 'No scores yet. Play to set a record!';
             listElement.appendChild(emptyMessage);
         }
+    }
+}
+
+// ==================== IDLE SCENE ====================
+class IdleScene {
+    constructor(scene, camera) {
+        this.scene = scene;
+        this.camera = camera;
+        this.idleCubes = [];
+        this.isActive = false;
+        this.blockSize = 1.0;
+        
+        // Guardar la configuración original de la cámara
+        this.originalCameraPosition = camera.position.clone();
+        this.originalCameraRotation = camera.rotation.clone();
+    }
+    
+    createIdleCube(color) {
+        const group = new THREE.Group();
+        const lineColor = 0xdcee2d; // Amarillo para las aristas
+        const lineRadius = 0.03;
+        const size = this.blockSize * 0.9 / 2;
+        
+        // Material para las líneas
+        const lineMaterial = new THREE.MeshBasicMaterial({ 
+            color: lineColor,
+            transparent: true,
+            opacity: 0.9
+        });
+        
+        // Cubo interior con textura
+        const innerSize = this.blockSize * 0.75;
+        const innerGeometry = new THREE.BoxGeometry(innerSize, innerSize, innerSize);
+        
+        const textureLoader = new THREE.TextureLoader();
+        const cubeTexture = textureLoader.load('./cube.png');
+        cubeTexture.colorSpace = THREE.SRGBColorSpace;
+        
+        const innerMaterial = new THREE.MeshBasicMaterial({ 
+            map: cubeTexture,
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        const innerCube = new THREE.Mesh(innerGeometry, innerMaterial);
+        group.add(innerCube);
+        
+        // Crear las 12 aristas del cubo
+        const edges = [
+            [[-size, -size, -size], [size, -size, -size]],
+            [[size, -size, -size], [size, -size, size]],
+            [[size, -size, size], [-size, -size, size]],
+            [[-size, -size, size], [-size, -size, -size]],
+            [[-size, size, -size], [size, size, -size]],
+            [[size, size, -size], [size, size, size]],
+            [[size, size, size], [-size, size, size]],
+            [[-size, size, size], [-size, size, -size]],
+            [[-size, -size, -size], [-size, size, -size]],
+            [[size, -size, -size], [size, size, -size]],
+            [[size, -size, size], [size, size, size]],
+            [[-size, -size, size], [-size, size, size]]
+        ];
+        
+        edges.forEach(([start, end]) => {
+            const startVec = new THREE.Vector3(...start);
+            const endVec = new THREE.Vector3(...end);
+            const direction = new THREE.Vector3().subVectors(endVec, startVec);
+            const length = direction.length();
+            
+            const geometry = new THREE.CylinderGeometry(lineRadius, lineRadius, length);
+            const cylinder = new THREE.Mesh(geometry, lineMaterial);
+            
+            cylinder.position.copy(startVec).add(endVec).multiplyScalar(0.5);
+            cylinder.lookAt(endVec);
+            cylinder.rotateX(Math.PI / 2);
+            
+            group.add(cylinder);
+        });
+        
+        return group;
+    }
+    
+    show() {
+        this.isActive = true;
+        
+        // Configurar cámara para la escena idle
+        // Zoom más cercano (frustumSize más pequeño = más zoom)
+        const aspect = 1166 / 1920;
+        const frustumSize = 2; // Muy zoomeado para ver solo 2 cubos de ancho
+        
+        this.camera.left = -frustumSize * aspect;
+        this.camera.right = frustumSize * aspect;
+        this.camera.top = frustumSize;
+        this.camera.bottom = -frustumSize;
+        this.camera.updateProjectionMatrix();
+        
+        // Posicionar cámara con rotación picada del 15%
+        this.camera.position.set(0, 2, 8); // Ligeramente arriba y adelante
+        this.camera.lookAt(0, 0, 0);
+        this.camera.rotation.x = -0.15 * Math.PI; // 15% de rotación hacia abajo
+        
+        // Crear 15 cubos en posiciones aleatorias con profundidad
+        for (let i = 0; i < 15; i++) {
+            const cube = this.createIdleCube();
+            
+            // Posiciones aleatorias en un área pequeña pero con profundidad
+            const x = (Math.random() - 0.5) * 3;
+            const y = (Math.random() - 0.5) * 3;
+            const z = (Math.random() - 0.5) * 6 - 2; // Profundidad de -5 a +1
+            
+            cube.position.set(x, y, z);
+            
+            // Rotación aleatoria
+            cube.rotation.x = Math.random() * Math.PI;
+            cube.rotation.y = Math.random() * Math.PI;
+            cube.rotation.z = Math.random() * Math.PI;
+            
+            // Velocidad de rotación aleatoria
+            cube.userData.rotationSpeed = {
+                x: (Math.random() - 0.5) * 0.5,
+                y: (Math.random() - 0.5) * 0.5,
+                z: (Math.random() - 0.5) * 0.5
+            };
+            
+            this.scene.add(cube);
+            this.idleCubes.push(cube);
+        }
+    }
+    
+    hide() {
+        this.isActive = false;
+        
+        // Limpiar cubos de la escena
+        this.idleCubes.forEach(cube => {
+            this.scene.remove(cube);
+        });
+        this.idleCubes = [];
+        
+        // Restaurar configuración original de la cámara
+        this.camera.position.copy(this.originalCameraPosition);
+        this.camera.rotation.copy(this.originalCameraRotation);
+        
+        // Restaurar frustum original
+        const aspect = 1166 / 1920;
+        const frustumSize = 10;
+        this.camera.left = -frustumSize * aspect;
+        this.camera.right = frustumSize * aspect;
+        this.camera.top = frustumSize;
+        this.camera.bottom = -frustumSize;
+        this.camera.updateProjectionMatrix();
+    }
+    
+    update(deltaTime) {
+        if (!this.isActive) return;
+        
+        // Animar rotación de los cubos
+        this.idleCubes.forEach(cube => {
+            cube.rotation.x += cube.userData.rotationSpeed.x * deltaTime;
+            cube.rotation.y += cube.userData.rotationSpeed.y * deltaTime;
+            cube.rotation.z += cube.userData.rotationSpeed.z * deltaTime;
+        });
     }
 }
 
@@ -1323,12 +1488,16 @@ class App {
         this.setupCamera();
         this.setupLights();
         
+        // Create idle scene
+        this.idleScene = new IdleScene(this.scene, this.camera);
+        window.idleScene = this.idleScene;
+        
         // Create game
         this.tetrisGame = new TetrisGame(this.scene, this.camera);
         window.tetrisGame = this.tetrisGame;
         
         // Create state manager
-        this.gameStateManager = new GameStateManager();
+        this.gameStateManager = new GameStateManager(this.idleScene);
         window.gameStateManager = this.gameStateManager;
         
         // Input
@@ -1372,6 +1541,10 @@ class App {
         requestAnimationFrame(() => this.animate());
         
         const deltaTime = this.clock.getDelta();
+        
+        if (this.idleScene) {
+            this.idleScene.update(deltaTime);
+        }
         
         if (this.tetrisGame) {
             this.tetrisGame.update(deltaTime);

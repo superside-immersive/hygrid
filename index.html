@@ -350,31 +350,21 @@
     }
 
     /* === PANTALLA IDLE === */
-    #idle-screen .idle-message {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 60px;
-      text-transform: uppercase;
-      letter-spacing: -0.66px;
-      color: #dcee2d;
-      margin-bottom: 2rem;
-      animation: pulse 2s ease-in-out infinite;
-      line-height: 1.5;
+    #idle-screen {
+      justify-content: center;
+      align-items: center;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.02); }
+    #idle-screen .idle-logo {
+      width: 400px;
+      height: auto;
+      animation: floatLogo 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px rgba(220, 238, 45, 0.3));
     }
 
-    #idle-screen .subtitle {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 40px;
-      color: #dcee2d;
-      letter-spacing: -0.44px;
-      margin-top: 1rem;
-      line-height: 1.5;
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
     }
 
     /* === PANTALLA INTRO === */
@@ -647,8 +637,7 @@
     <div class="overlay-screens">
       <!-- IDLE -->
       <div id="idle-screen" class="screen">
-        <div class="idle-message">PRESS ANY BUTTON TO PLAY</div>
-        <div class="subtitle">Match colors to zones!</div>
+        <img src="logo.png" alt="HyGrid" class="idle-logo">
       </div>
 
       <!-- INTRO -->
