@@ -1,0 +1,108 @@
+<html>
+<head>
+	<title>Javascript MIDI Player</title>
+	<!--
+	<script src='https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js'></script>
+	-->
+	<script src='WebAudioFontPlayer.js'></script>
+    <script src='MIDIFile.js'></script>
+    <script src='MIDIPlayer.js'></script>
+</head>
+<body>
+	<h2>Javascript MIDI Player</h2>
+	<div id='cntls'>
+		<p style="font-size: 0.9em; color: #666; margin-bottom: 10px;">Click anywhere to start playing</p>
+		<p>
+			<button type="button" onclick="player.play()">Play</button>
+			<button type="button" onclick="player.pause()">Pause</button>
+			<button type="button" onclick="player.stop()">Stop</button>
+			<input id="position" type="range" min="0" max="100" value="0">
+			<input type="checkbox" id="loop" checked onchange="player.autoReplay=this.checked">Loop
+		</p>
+		<p>
+			<label for="tempo">Tempo/BPM: <span id="tempoValue">100%</span></label>
+			<input id="tempo" type="range" min="25" max="300" value="100" step="5" 
+				   oninput="player.setTempo(this.value/100); document.getElementById('tempoValue').textContent=this.value+'%'">
+			<button type="button" onclick="resetTempo()">Reset</button>
+		</p>
+	</div>
+	<script>
+	// Autoplay enabled - will start automatically on first user interaction
+    var autoplay=true;
+	var songLoaded=false;
+	var hasStartedPlaying=false;
+	// create the player object (no file input needed anymore)
+	var player=new MIDIPlayer();
+	// Ensure loop is enabled by default
+	player.autoReplay = true;
+    var resumeOnFocus=false;
+	
+	// Function to reset tempo
+	function resetTempo(){
+		player.setTempo(1.0);
+		document.getElementById('tempo').value = 100;
+		document.getElementById('tempoValue').textContent = '100%';
+	}
+	
+	// Register the onload function FIRST; song is ready
+	player.onload = function(song){
+		console.log('Song loaded, duration:', song.duration);
+		songLoaded = true;
+		var pos= document.getElementById("position");
+		pos.setAttribute("max",Math.round(song.duration*10));
+		console.log('Song ready - waiting for user interaction to play');
+	}
+	// the tick event is triggered in every position change
+	player.ontick=function(song,position){
+		var pos= document.getElementById("position");
+		pos.value=Math.round(position*10);
+	}
+	// the end event is triggered when the song ends (loop is handled by player.autoReplay)
+	player.onend=function(){
+		console.log("Song ended", new Date(), "Loop enabled:", player.autoReplay);
+	}
+	// Pause on blur only if currently playing, and resume on focus if it was
+	window.onblur=function(){
+		console.log("Blur", new Date())
+		if (player && player.state===player.PLAYING){
+			resumeOnFocus=true;
+			player.pause();
+		} else {
+			resumeOnFocus=false;
+		}
+	}
+	window.onfocus=function(){
+		console.log("Focus", new Date())
+		if (resumeOnFocus){
+			player.play();
+			resumeOnFocus=false;
+		}
+	}
+	
+	// Start playback on ANY user interaction (click, touch, key) - only once
+	var startOnInteraction = function(e){
+		if (songLoaded && !hasStartedPlaying){
+			hasStartedPlaying = true;
+			console.log('User interaction detected - starting playback!');
+			player.play();
+			// Remove ALL listeners after first successful start
+			document.removeEventListener('click', startOnInteraction, true);
+			document.removeEventListener('touchstart', startOnInteraction, true);
+			document.removeEventListener('keydown', startOnInteraction, true);
+		}
+	};
+	// Use capture phase to catch clicks even on buttons
+	document.addEventListener('click', startOnInteraction, true);
+	document.addEventListener('touchstart', startOnInteraction, true);
+	document.addEventListener('keydown', startOnInteraction, true);
+	
+	// Load dance.mid automatically after page loads
+	window.addEventListener('load', function(){
+		console.log('Auto-loading dance.mid');
+		player.handleURL('dance.mid');
+	});
+        
+	</script>
+</body>
+
+</html>
