@@ -561,7 +561,7 @@ class TetrisGame {
         this.lastYellowModeScore = 0;
         this.isYellowMode = false;
         this.yellowModeStartTime = 0;
-        this.YELLOW_MODE_DURATION = 5;
+        this.YELLOW_MODE_DURATION = 10;
         this.YELLOW_MODE_THRESHOLD = 10000;
         
         // Flash effects
@@ -969,6 +969,9 @@ class TetrisGame {
             if (typeof window.playLevelUpSFX === 'function') {
                 window.playLevelUpSFX();
             }
+            if (typeof window.showLevelUpOverlay === 'function') {
+                window.showLevelUpOverlay(this.level);
+            }
             // Aumentar velocidad de la música según el nivel
             if (typeof window.setMusicTempo === 'function') {
                 const tempo = 1.0 + (this.level - 1) * 0.1; // +10% por nivel
@@ -992,6 +995,9 @@ class TetrisGame {
         }
         if (typeof window.triggerBonusFlash === 'function') {
             window.triggerBonusFlash();
+        }
+        if (typeof window.showPowerUpOverlay === 'function') {
+            window.showPowerUpOverlay();
         }
         
         // Convertir todos los bloques a amarillo (solo visual)
