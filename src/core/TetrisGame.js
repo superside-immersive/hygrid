@@ -555,6 +555,27 @@ export class TetrisGame {
             window.stopMusic();
         }
     }
+
+    // Eliminar todos los cubos del tablero y de la pieza actual,
+    // sin tocar puntaje/estado, para limpiar la vista en GAME OVER
+    clearAllCubes() {
+        // Limpiar tablero
+        for (let y = 0; y < this.boardHeight; y++) {
+            for (let x = 0; x < this.boardWidth; x++) {
+                if (this.board[y][x]) {
+                    this.scene.remove(this.board[y][x]);
+                    this.board[y][x] = null;
+                }
+            }
+        }
+        // Limpiar pieza actual
+        this.currentPieceCubes.forEach(cube => this.scene.remove(cube));
+        this.currentPieceCubes = [];
+        // Limpiar efectos pendientes para evitar referencias
+        if (this.flashingCubes && this.flashingCubes.clear) {
+            this.flashingCubes.clear();
+        }
+    }
     
     resetGame() {
         console.log('🔄 Reseteando juego...');

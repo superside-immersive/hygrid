@@ -31,11 +31,19 @@ export class GameStateManager {
     }
     
     setupEventListeners() {
-        document.addEventListener('keydown', () => {
-            if (this.currentState === 'idle' && !this.isShowingScoreboard) {
+        const tryStart = () => {
+            // Permitir iniciar desde IDLE y también desde SCOREBOARD visible
+            if (this.currentState === 'idle') {
+                // Si está mostrando scoreboard, ocultarlo y arrancar
+                if (this.isShowingScoreboard) {
+                    this.hideScoreboard();
+                }
                 this.startGame();
             }
-        });
+        };
+        document.addEventListener('keydown', tryStart);
+        document.addEventListener('click', tryStart);
+        document.addEventListener('touchstart', tryStart, { passive: true });
     }
     
     update(deltaTime) {
@@ -153,6 +161,11 @@ export class GameStateManager {
         if (!this.gameOverScreen) return;
         this.gameOverScreen.style.display = 'flex';
         
+        // Limpiar cubos del juego para que no queden visibles en GAME OVER
+        if (window.tetrisGame && typeof window.tetrisGame.clearAllCubes === 'function') {
+            window.tetrisGame.clearAllCubes();
+        }
+
         if (window.tetrisGame) {
             const scoreValue = document.getElementById('final-score-value');
             const linesValue = document.getElementById('final-lines-value');

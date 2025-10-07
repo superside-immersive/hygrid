@@ -185,6 +185,31 @@
   margin: 0 auto;
 }
 
+.scoreboard-hint {
+  margin-top: 40px;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  color: #dcee2d; /* amarillo */
+  letter-spacing: 0.4px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.lighedgefooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 30px;
+}
+
+.lighedgefooter .lightedge-logo-full {
+  height: 48px;
+  width: auto;
+  opacity: 0.95;
+}
+
 /* === BONUS FLASH OVERLAY === */
 #bonus-flash-overlay {
   position: fixed;

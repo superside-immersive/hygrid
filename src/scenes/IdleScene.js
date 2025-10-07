@@ -227,5 +227,28 @@ export class IdleScene {
             cube.position.x = gridX;
             cube.position.z = gridZ;
         });
+
+        // Asegurar que siempre haya cubos cayendo: si por algún motivo se vacía la lista, re-crear
+        if (this.idleCubes.length < 8) {
+            // Crear algunos cubos adicionales en posiciones superiores aleatorias
+            const extras = 8 - this.idleCubes.length;
+            for (let i = 0; i < extras; i++) {
+                const cube = this.createIdleCube();
+                // Posición aleatoria en X/Z dentro de la grilla y por arriba
+                const xIdx = Math.floor(Math.random() * this.gridCols);
+                const zIdx = Math.floor(Math.random() * this.gridDepth);
+                const yTopIdx = this.gridRows + Math.floor(Math.random() * 2); // un poco por encima
+                cube.userData.gridX = xIdx;
+                cube.userData.gridY = yTopIdx;
+                cube.userData.gridZ = zIdx;
+                cube.userData.yOffset = 0;
+                // Colocar posición en mundo acorde
+                cube.position.x = (xIdx - (this.gridCols - 1) / 2) * this.gridSpacing;
+                cube.position.z = -zIdx * this.gridSpacing * 1.2;
+                cube.position.y = this.gridMaxY + 2; // por arriba del top visible
+                this.scene.add(cube);
+                this.idleCubes.push(cube);
+            }
+        }
     }
 }
