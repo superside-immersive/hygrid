@@ -169,6 +169,10 @@ class GameStateManager {
             this.scoreboardScreen.style.display = 'flex';
             this.updateScoreboardDisplay();
         }
+        // Activar escena idle para ocultar grid y mostrar cubos cayendo
+        if (this.idleScene && !this.idleScene.isActive) {
+            this.idleScene.show();
+        }
     }
     
     hideScoreboard() {
@@ -281,12 +285,14 @@ class GameStateManager {
 
 // ==================== IDLE SCENE ====================
 class IdleScene {
-    constructor(scene, camera) {
+    constructor(scene, camera, tetrisGame) {
         this.scene = scene;
         this.camera = camera;
+        this.tetrisGame = tetrisGame;
         this.idleCubes = [];
         this.isActive = false;
         this.blockSize = 1.0;
+        this.cameraRotationSpeed = 0.02; // Velocidad de rotación muy lenta
         
         // Guardar la configuración original de la cámara
         this.originalCameraPosition = camera.position.clone();
@@ -306,8 +312,8 @@ class IdleScene {
             opacity: 1.0 // Opacidad completa para líneas más visibles
         });
         
-        // Cubo interior con textura (más brillante)
-        const innerSize = this.blockSize * 0.75;
+        // Cubo interior con textura (más brillante y más grande, casi del tamaño del contorno)
+        const innerSize = this.blockSize * 0.88; // Más cerca del tamaño del contorno (0.9)
         const innerGeometry = new THREE.BoxGeometry(innerSize, innerSize, innerSize);
         
         const textureLoader = new THREE.TextureLoader();
@@ -361,6 +367,13 @@ class IdleScene {
     show() {
         this.isActive = true;
         
+        // Ocultar el grid de fondo
+        if (this.tetrisGame && this.tetrisGame.backgroundLines) {
+            this.tetrisGame.backgroundLines.forEach(line => {
+                line.visible = false;
+            });
+        }
+        
         // Configurar cámara para la escena idle
         // Zoom más cercano (frustumSize más pequeño = más zoom)
         const aspect = 1166 / 1920;
@@ -372,11 +385,11 @@ class IdleScene {
         this.camera.bottom = -frustumSize;
         this.camera.updateProjectionMatrix();
         
-        // Posicionar cámara con rotación picada del 15% y leve rotación horizontal
-        this.camera.position.set(1.5, 2, 8); // Ligeramente desplazada horizontalmente
+        // Posicionar cámara casi de frente con muy leve rotación picada
+        this.camera.position.set(0.3, 0.8, 8); // Casi centrada, ligeramente arriba
         this.camera.lookAt(0, 0, 0);
-        this.camera.rotation.x = -0.15 * Math.PI; // 15% de rotación hacia abajo
-        this.camera.rotation.y = 0.1 * Math.PI; // Leve rotación horizontal
+        this.camera.rotation.x = -0.05 * Math.PI; // Muy leve rotación hacia abajo (5%)
+        this.camera.rotation.y = 0.02 * Math.PI; // Mínima rotación horizontal
         
         // Crear grilla 3x6x4 (ancho x alto x profundidad)
         const cols = 3; // ancho (X)
@@ -402,11 +415,27 @@ class IdleScene {
         const shuffled = gridPositions.sort(() => Math.random() - 0.5);
         const selectedPositions = shuffled.slice(0, 10);
         
+        // Guardar configuración de la grilla para el scroll y snap
+        this.gridSpacing = spacing;
+        this.gridCols = cols;
+        this.gridRows = rows;
+        this.gridDepth = depth;
+        this.gridMinY = -(rows - 1) / 2 * spacing;
+        this.gridMaxY = (rows - 1) / 2 * spacing;
+        this.gridHeight = this.gridMaxY - this.gridMinY;
+        this.scrollSpeed = 0.5; // Velocidad de bajada
+        
         // Crear 10 cubos en las posiciones seleccionadas
         selectedPositions.forEach(pos => {
             const cube = this.createIdleCube();
             cube.position.set(pos.x, pos.y, pos.z);
             cube.rotation.set(0, 0, 0); // Sin rotación
+            
+            // Guardar posición en la grilla (índices)
+            cube.userData.gridX = Math.round((pos.x / spacing) + (cols - 1) / 2);
+            cube.userData.gridY = Math.round((pos.y / spacing) + (rows - 1) / 2);
+            cube.userData.gridZ = Math.round((-pos.z / (spacing * 1.2)));
+            cube.userData.yOffset = 0; // Offset de scroll acumulado
             
             this.scene.add(cube);
             this.idleCubes.push(cube);
@@ -415,6 +444,13 @@ class IdleScene {
     
     hide() {
         this.isActive = false;
+        
+        // Mostrar el grid de fondo nuevamente
+        if (this.tetrisGame && this.tetrisGame.backgroundLines) {
+            this.tetrisGame.backgroundLines.forEach(line => {
+                line.visible = true;
+            });
+        }
         
         // Limpiar cubos de la escena
         this.idleCubes.forEach(cube => {
@@ -439,7 +475,39 @@ class IdleScene {
     update(deltaTime) {
         if (!this.isActive) return;
         
-        // Los cubos están estáticos, sin animación de rotación
+        // Rotación suave de la cámara (muy lenta)
+        this.camera.rotation.y += this.cameraRotationSpeed * deltaTime;
+        
+        // Animar scroll hacia abajo de los cubos, manteniendo snap a grilla
+        this.idleCubes.forEach(cube => {
+            // Acumular el offset de scroll
+            cube.userData.yOffset -= this.scrollSpeed * deltaTime;
+            
+            // Calcular posición Y snapeada a la grilla más el offset continuo
+            const baseGridY = (cube.userData.gridY || 0) * this.gridSpacing - ((this.gridRows - 1) / 2) * this.gridSpacing;
+            cube.position.y = baseGridY + cube.userData.yOffset;
+            
+            // Cuando el offset baja más de un spacing, ajustar el índice de grilla
+            if (cube.userData.yOffset <= -this.gridSpacing) {
+                cube.userData.yOffset += this.gridSpacing;
+                cube.userData.gridY = (cube.userData.gridY || 0) - 1;
+            }
+            
+            // Cuando el cubo sale por abajo, reposicionarlo arriba
+            const margin = 2;
+            if (cube.position.y < this.gridMinY - margin) {
+                // Calcular cuántas filas necesita subir para estar arriba
+                const rowsToJump = this.gridRows + Math.ceil(margin / this.gridSpacing) * 2;
+                cube.userData.gridY = (cube.userData.gridY || 0) + rowsToJump;
+                cube.userData.yOffset = 0;
+            }
+            
+            // Mantener X y Z snapeados a la grilla (no cambian)
+            const gridX = (cube.userData.gridX - (this.gridCols - 1) / 2) * this.gridSpacing;
+            const gridZ = -cube.userData.gridZ * this.gridSpacing * 1.2;
+            cube.position.x = gridX;
+            cube.position.z = gridZ;
+        });
     }
 }
 
@@ -495,6 +563,9 @@ class TetrisGame {
         this.flashingCubes = new Map();
         this.flashDuration = 0.5; // 0.5 segundos
         this.gameTime = 0;
+        
+        // Background grid lines
+        this.backgroundLines = [];
         
         // Materials
         this.createMaterials();
@@ -602,6 +673,7 @@ class TetrisGame {
         });
         const line = new THREE.Line(geometry, material);
         this.scene.add(line);
+        this.backgroundLines.push(line); // Guardar referencia
     }
     
     createColoredVerticalLine(worldX, color) {
@@ -619,6 +691,7 @@ class TetrisGame {
         });
         const line = new THREE.Line(geometry, material);
         this.scene.add(line);
+        this.backgroundLines.push(line); // Guardar referencia
     }
     
     chooseNextPiece() {
@@ -1491,13 +1564,13 @@ class App {
         this.setupCamera();
         this.setupLights();
         
-        // Create idle scene
-        this.idleScene = new IdleScene(this.scene, this.camera);
-        window.idleScene = this.idleScene;
-        
-        // Create game
+        // Create game first (needed by idle scene)
         this.tetrisGame = new TetrisGame(this.scene, this.camera);
         window.tetrisGame = this.tetrisGame;
+        
+        // Create idle scene (needs tetrisGame reference)
+        this.idleScene = new IdleScene(this.scene, this.camera, this.tetrisGame);
+        window.idleScene = this.idleScene;
         
         // Create state manager
         this.gameStateManager = new GameStateManager(this.idleScene);

@@ -353,6 +353,7 @@
     #idle-screen {
       justify-content: center;
       align-items: center;
+      background: transparent !important; /* Sin fondo para ver los cubos */
     }
 
     #idle-screen .idle-logo {
@@ -360,7 +361,6 @@
       height: auto;
       animation: floatLogo 3s ease-in-out infinite;
       filter: drop-shadow(0 0 20px rgba(220, 238, 45, 0.3));
-      opacity: 0.85; /* Ligeramente transparente para ver los cubos detrás */
     }
 
     @keyframes floatLogo {
@@ -489,7 +489,7 @@
 
     /* === SCOREBOARD === */
     #scoreboard-screen {
-      background: rgba(0, 0, 0, 0.95);
+      background: transparent !important; /* Sin fondo para ver los cubos */
       padding: 80px 40px;
     }
 
