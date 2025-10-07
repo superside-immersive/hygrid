@@ -415,6 +415,17 @@ export class TetrisGame {
     addScore(points) {
         this.score += points;
         
+        // Actualizar UI del score
+        const scoreElement = document.getElementById('score-value');
+        if (scoreElement) {
+            scoreElement.textContent = String(this.score).padStart(6, '0');
+        }
+        
+        // Actualizar logo fill
+        if (typeof window.updateLogoFill === 'function') {
+            window.updateLogoFill(this.score);
+        }
+        
         const newLevel = Math.floor(this.score / this.LEVEL_THRESHOLD) + 1;
         if (newLevel > this.level) {
             this.level = newLevel;
@@ -573,8 +584,17 @@ export class TetrisGame {
         this.currentPiece = null;
         this.nextPiece = null;
         
+        // Actualizar UI
+        const scoreElement = document.getElementById('score-value');
+        if (scoreElement) {
+            scoreElement.textContent = '000000';
+        }
+        
         if (typeof window.updateLevel === 'function') {
             window.updateLevel(1);
+        }
+        if (typeof window.updateLogoFill === 'function') {
+            window.updateLogoFill(0);
         }
         if (typeof window.hideYellowBonus === 'function') {
             window.hideYellowBonus();
@@ -824,6 +844,8 @@ export class TetrisGame {
     }
     
     rotatePiece() {
+        if (!this.currentPiece) return;
+        
         const oldRotation = this.currentPiece.rotationState;
         this.currentPiece.rotationState = (this.currentPiece.rotationState + 1) % 4;
         

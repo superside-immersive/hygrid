@@ -7,6 +7,8 @@ export class AudioController {
     this.musicStarted = false;
     this.musicTempo = 1.0;
     this.sfxAudioContext = null;
+    this.parsedSong = null;
+    this.pendingStart = false;
     
     this.initMIDIPlayer();
     this.initSFXContext();
@@ -14,13 +16,32 @@ export class AudioController {
 
   // === MIDI PLAYER ===
   initMIDIPlayer() {
-    try {
-      if (typeof MIDIPlayer === 'undefined') {
-        console.warn('⚠️ MIDIPlayer no disponible');
-        return;
-      }
+    // Esperar a que MIDIPlayer esté disponible
+    if (typeof MIDIPlayer === 'undefined') {
+      console.warn('⚠️ MIDIPlayer aún no disponible, reintentando...');
+      setTimeout(() => this.initMIDIPlayer(), 100);
+      return;
+    }
 
+    try {
       this.midiPlayer = new MIDIPlayer();
+      // Hook onload from MIDIPlayer: será llamado cuando loadSong termine
+      try {
+        this.midiPlayer.onload = (song) => {
+          console.log('✅ MIDIPlayer.onload: carga completa');
+          // Si se pidió iniciar música antes de que terminara la carga
+          if (this.pendingStart) {
+            if (typeof this.midiPlayer.play === 'function') {
+              this.midiPlayer.play();
+              this.musicStarted = true;
+              this.pendingStart = false;
+              console.log('▶️ Música iniciada automáticamente tras load');
+            }
+          }
+        };
+      } catch (e) {
+        console.warn('⚠️ No se pudo asignar onload al MIDIPlayer', e);
+      }
       
       const request = new XMLHttpRequest();
       request.open('GET', './assets/audio/midiplayer/dance.mid', true);
@@ -31,12 +52,24 @@ export class AudioController {
           const arrayBuffer = request.response;
           const midiFile = new MIDIFile(arrayBuffer);
           const song = midiFile.parseSong();
-          
-          this.midiPlayer.setSong(song);
-          this.midiPlayer.loadPlugin(1, '_tone_0000_JCLive_sf2_file');
-          this.midiPlayer.loop(true);
-          
-          console.log('✅ MIDI cargado correctamente');
+          // Guardar song para uso futuro y usar la API del MIDIPlayer presente
+          this.parsedSong = song;
+
+          // Iniciar la carga de instrumentos / samples mediante la API real
+          if (typeof this.midiPlayer.startLoad === 'function') {
+            try {
+              this.midiPlayer.startLoad(song);
+              // Usar autoReplay como equivalente a loop
+              this.midiPlayer.autoReplay = true;
+              console.log('✅ MIDI parseado y startLoad() llamado');
+            } catch (err) {
+              console.error('❌ Error iniciando startLoad en MIDIPlayer:', err);
+            }
+          } else {
+            // Fallback: asignar song directamente (no ideal)
+            this.midiPlayer.song = song;
+            console.log('⚠️ MIDIPlayer.startLoad no disponible, song asignado directamente');
+          }
         } catch (error) {
           console.error('❌ Error parseando MIDI:', error);
         }
@@ -60,17 +93,41 @@ export class AudioController {
     }
 
     if (this.musicStarted) {
-      this.midiPlayer.resume();
-      console.log('▶️ Música resumida');
-    } else {
-      try {
-        this.midiPlayer.startLoad();
-        this.midiPlayer.startPlay();
-        this.musicStarted = true;
-        console.log('▶️ Música iniciada');
-      } catch (error) {
-        console.error('❌ Error iniciando música:', error);
+      if (typeof this.midiPlayer.resume === 'function') {
+        this.midiPlayer.resume();
+        console.log('▶️ Música resumida');
+      } else {
+        console.log('▶️ Música ya iniciada (resume no disponible)');
       }
+      return;
+    }
+
+    // Si ya se cargó la canción en el player, pedir play()
+    try {
+      const loaded = (typeof this.midiPlayer.getCurrentSong === 'function') ? this.midiPlayer.getCurrentSong() : null;
+      if (loaded) {
+        if (typeof this.midiPlayer.play === 'function') {
+          this.midiPlayer.play();
+          this.musicStarted = true;
+          console.log('▶️ Música iniciada (play)');
+          return;
+        }
+      }
+
+      // Si no está cargada todavía, marcar pendingStart y asegurarse de que la carga esté en marcha
+      this.pendingStart = true;
+      if (this.parsedSong && typeof this.midiPlayer.startLoad === 'function') {
+        try {
+          this.midiPlayer.startLoad(this.parsedSong);
+          console.log('⏳ Música pendiente: startLoad() (esperando load)');
+        } catch (err) {
+          console.error('❌ Error al llamar startLoad en startMusic():', err);
+        }
+      } else {
+        console.log('⏳ Música pendiente: esperando que se complete la carga');
+      }
+    } catch (error) {
+      console.error('❌ Error iniciando música:', error);
     }
   }
 
@@ -198,9 +255,18 @@ export class AudioController {
     
     if (this.midiPlayer) {
       console.log('Player state:', {
+        hasStartLoad: typeof this.midiPlayer.startLoad === 'function',
+        hasPlay: typeof this.midiPlayer.play === 'function',
         isPlaying: this.midiPlayer.isPlaying ? this.midiPlayer.isPlaying() : 'unknown',
-        song: this.midiPlayer.song ? 'loaded' : 'not loaded'
+        songLoaded: !!(this.midiPlayer && (this.midiPlayer.getCurrentSong ? this.midiPlayer.getCurrentSong() : this.midiPlayer.song)),
+        parsedSongAvailable: !!this.parsedSong,
+        pendingStart: !!this.pendingStart
       });
+      try {
+        console.log('loader present:', !!(this.midiPlayer && this.midiPlayer.getContext ? 'yes' : (this.midiPlayer && this.midiPlayer.loader ? 'yes' : 'no')));
+      } catch (e) {
+        // ignore
+      }
     }
   }
 }

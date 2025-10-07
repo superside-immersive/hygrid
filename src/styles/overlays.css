@@ -207,8 +207,8 @@
 #powerup-overlay {
   background: transparent !important;
   pointer-events: none;
-  justify-content: flex-start;
-  padding-top: 35%;
+  justify-content: flex-end;
+  padding-bottom: 18%;
 }
 
 #powerup-overlay img {
@@ -222,8 +222,8 @@
 #levelup-overlay {
   background: rgba(0, 0, 0, 0.7);
   pointer-events: none;
-  justify-content: flex-start;
-  padding-top: 35%;
+  justify-content: flex-end;
+  padding-bottom: 18%;
 }
 
 #levelup-overlay img {
