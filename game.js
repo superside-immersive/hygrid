@@ -299,14 +299,14 @@ class IdleScene {
         const lineRadius = 0.03;
         const size = this.blockSize * 0.9 / 2;
         
-        // Material para las líneas
+        // Material para las líneas (más brillante)
         const lineMaterial = new THREE.MeshBasicMaterial({ 
             color: lineColor,
             transparent: true,
-            opacity: 0.9
+            opacity: 1.0 // Opacidad completa para líneas más visibles
         });
         
-        // Cubo interior con textura
+        // Cubo interior con textura (más brillante)
         const innerSize = this.blockSize * 0.75;
         const innerGeometry = new THREE.BoxGeometry(innerSize, innerSize, innerSize);
         
@@ -317,7 +317,7 @@ class IdleScene {
         const innerMaterial = new THREE.MeshBasicMaterial({ 
             map: cubeTexture,
             transparent: true,
-            opacity: 0.8
+            opacity: 1.0 // Opacidad completa para textura más brillante
         });
         
         const innerCube = new THREE.Mesh(innerGeometry, innerMaterial);
@@ -377,31 +377,33 @@ class IdleScene {
         this.camera.lookAt(0, 0, 0);
         this.camera.rotation.x = -0.15 * Math.PI; // 15% de rotación hacia abajo
         
-        // Crear 15 cubos en posiciones aleatorias con profundidad
-        for (let i = 0; i < 15; i++) {
-            const cube = this.createIdleCube();
-            
-            // Posiciones aleatorias en un área pequeña pero con profundidad
-            const x = (Math.random() - 0.5) * 3;
-            const y = (Math.random() - 0.5) * 3;
-            const z = (Math.random() - 0.5) * 6 - 2; // Profundidad de -5 a +1
-            
-            cube.position.set(x, y, z);
-            
-            // Rotación aleatoria
-            cube.rotation.x = Math.random() * Math.PI;
-            cube.rotation.y = Math.random() * Math.PI;
-            cube.rotation.z = Math.random() * Math.PI;
-            
-            // Velocidad de rotación aleatoria
-            cube.userData.rotationSpeed = {
-                x: (Math.random() - 0.5) * 0.5,
-                y: (Math.random() - 0.5) * 0.5,
-                z: (Math.random() - 0.5) * 0.5
-            };
-            
-            this.scene.add(cube);
-            this.idleCubes.push(cube);
+        // Crear 15 cubos en grilla ordenada 3x5 con profundidad
+        const rows = 5;
+        const cols = 3;
+        const spacing = 1.2; // Espaciado entre cubos
+        const depthLayers = 3; // Capas de profundidad
+        
+        let cubeIndex = 0;
+        for (let layer = 0; layer < depthLayers && cubeIndex < 15; layer++) {
+            for (let row = 0; row < rows && cubeIndex < 15; row++) {
+                for (let col = 0; col < cols && cubeIndex < 15; col++) {
+                    const cube = this.createIdleCube();
+                    
+                    // Posición en grilla con offset centrado
+                    const x = (col - (cols - 1) / 2) * spacing;
+                    const y = (row - (rows - 1) / 2) * spacing;
+                    const z = -layer * spacing * 1.5; // Profundidad en capas
+                    
+                    cube.position.set(x, y, z);
+                    
+                    // Sin rotación - cubos alineados perfectamente
+                    cube.rotation.set(0, 0, 0);
+                    
+                    this.scene.add(cube);
+                    this.idleCubes.push(cube);
+                    cubeIndex++;
+                }
+            }
         }
     }
     
@@ -431,12 +433,7 @@ class IdleScene {
     update(deltaTime) {
         if (!this.isActive) return;
         
-        // Animar rotación de los cubos
-        this.idleCubes.forEach(cube => {
-            cube.rotation.x += cube.userData.rotationSpeed.x * deltaTime;
-            cube.rotation.y += cube.userData.rotationSpeed.y * deltaTime;
-            cube.rotation.z += cube.userData.rotationSpeed.z * deltaTime;
-        });
+        // Los cubos están estáticos, sin animación de rotación
     }
 }
 
