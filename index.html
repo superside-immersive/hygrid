@@ -10,531 +10,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
   
-  <!-- MIDI Player Scripts (sin defer, carga síncrona) -->
-  <script src='./midiplayer/WebAudioFontPlayer.js'></script>
-  <script src='./midiplayer/MIDIFile.js'></script>
-  <script src='./midiplayer/MIDIPlayer.js'></script>
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="./src/styles/main.css">
+  <link rel="stylesheet" href="./src/styles/ui.css">
+  <link rel="stylesheet" href="./src/styles/overlays.css">
   
-  <style>
-    /* === ESTILOS GENERALES === */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      overflow: hidden;
-      background: #000000;
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-    }
-
-    /* === THREE.JS CANVAS (siempre visible en fondo) === */
-    #game-canvas {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 1166px;
-      height: 1920px;
-      transform: translate(-50%, -50%);
-      transform-origin: center center;
-      z-index: 1;
-    }
-
-    /* === UI OVERLAY (sobre Three.js canvas) === */
-    .ui-overlay {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 1166px;
-      height: 1920px;
-      transform: translate(-50%, -50%);
-      transform-origin: center center;
-      pointer-events: none;
-      z-index: 10;
-      border: 3px solid #dcee2d;
-      box-sizing: border-box;
-    }
-
-    .game-ui-container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      pointer-events: none;
-    }
-
-    /* === TOP HEADER === */
-    .game-header {
-      flex-shrink: 0;
-      background: #000;
-      border: 2px solid #dcee2d;
-      border-bottom: 2px solid #dcee2d;
-      padding: 0;
-      z-index: 100;
-      display: none;
-      pointer-events: all;
-      position: relative;
-    }
-
-    /* Sección superior del header: logo centrado */
-    .header-top-section {
-      background: #000;
-      height: 109px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logo-top {
-      height: 68px;
-      width: 132px;
-      object-fit: contain;
-    }
-
-    /* Color zones en la parte inferior del header */
-    .color-zones-row {
-      display: flex;
-      width: 100%;
-    }
-
-    .zone {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      height: 55px;
-    }
-
-    .zone-text {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: 42px;
-      letter-spacing: 0.84px;
-      line-height: 1.5;
-      z-index: 2;
-      position: relative;
-      color: #211f23;
-    }
-
-    .zone-red {
-      background: #fe4143;
-    }
-
-    .zone-blue {
-      background: #60defd;
-    }
-
-    .zone-green {
-      background: #45fe57;
-    }
-
-    /* === ESPACIO CENTRAL (transparente para ver Three.js) === */
-    .game-scene-spacer {
-      flex: 1;
-      pointer-events: none;
-    }
-
-    /* === BOTTOM FOOTER === */
-    .game-footer {
-      flex-shrink: 0;
-      background: #211f23;
-      border: 2px solid #dcee2d;
-      border-top: 2px solid #dcee2d;
-      height: 250px;
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      pointer-events: all;
-    }
-
-    .footer-content {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0;
-    }
-
-    /* Score a la izquierda */
-    .score-display {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding-left: 88px;
-      flex: 0 0 auto;
-    }
-
-    .score-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 50px;
-      color: #dcee2d;
-      letter-spacing: -0.55px;
-      line-height: 1.5;
-      margin-bottom: -8px;
-    }
-
-    .score-value {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: 100px;
-      letter-spacing: -1.1px;
-      line-height: 1.5;
-    }
-
-    .score-gray {
-      color: #656565;
-    }
-
-    .score-yellow {
-      color: #dcee2d;
-    }
-
-    /* Logo en el centro */
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-    }
-
-    /* Level a la derecha con fondo amarillo */
-    .level-display-footer {
-      background: #dcee2d;
-      height: 250px;
-      width: 224px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 0 0 auto;
-    }
-
-    .level-label-footer {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 50px;
-      color: #211f23;
-      letter-spacing: -0.55px;
-      line-height: 1.5;
-      margin-bottom: -8px;
-    }
-
-    .level-number-footer {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: 100px;
-      color: #211f23;
-      letter-spacing: -1.1px;
-      line-height: 1.5;
-    }
-
-    /* === LOGO CON EFECTO DE LLENADO === */
-    .logo-container {
-      position: relative;
-      width: 200px;
-      height: 184.39px;
-      overflow: hidden;
-    }
-
-    /* Outline siempre visible (filled con opacidad baja) */
-    .logo-base {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      opacity: 0.3;
-      filter: brightness(0.8);
-      pointer-events: none;
-    }
-
-    /* Wrapper que controla el desenmascarado de abajo hacia arriba */
-    .logo-fill-wrapper {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 0%;
-      overflow: hidden;
-      transition: height 0.5s ease-out;
-      z-index: 1;
-    }
-
-    /* Logo completamente relleno que se va revelando */
-    .logo-fill {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 184.39px;
-    }
-
-    /* === OVERLAY SCREENS (FULLSCREEN) === */
-    .overlay-screens {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1000;
-    }
-
-    .screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.95);
-      color: white;
-      text-align: center;
-      pointer-events: all;
-      animation: fadeIn 0.3s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* === PANTALLA IDLE === */
-    #idle-screen {
-      justify-content: center;
-      align-items: center;
-      background: transparent !important; /* Sin fondo para ver los cubos */
-    }
-
-    #idle-screen .idle-logo {
-      width: 400px;
-      height: auto;
-      animation: floatLogo 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 20px rgba(220, 238, 45, 0.3));
-    }
-
-    @keyframes floatLogo {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-
-    /* === PANTALLA INTRO === */
-    #intro-screen .intro-message {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 60px;
-      color: #dcee2d;
-      letter-spacing: -0.66px;
-      margin-bottom: 2rem;
-      animation: scaleIn 0.5s ease-out;
-      line-height: 1.5;
-    }
-
-    @keyframes scaleIn {
-      from { transform: scale(0); }
-      to { transform: scale(1); }
-    }
-
-    #intro-screen .countdown {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 120px;
-      color: #dcee2d;
-      letter-spacing: -1.3px;
-      animation: countdownPulse 1s ease-in-out infinite;
-      line-height: 1.5;
-    }
-
-    @keyframes countdownPulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.9; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* === PANTALLA GAME OVER === */
-    #gameover-screen .gameover-message {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 80px;
-      color: #cf4526;
-      letter-spacing: -0.88px;
-      margin-bottom: 2rem;
-      animation: shake 0.5s ease-in-out;
-      line-height: 1.5;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-20px); }
-      75% { transform: translateX(20px); }
-    }
-
-    /* === BONUS FLASH OVERLAY === */
-    #bonus-flash-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(220, 238, 45, 0.4) 0%, rgba(220, 238, 45, 0) 70%);
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.1s ease-out;
-    }
-
-    #bonus-flash-overlay.flash-active {
-      animation: bonusFlash 1s ease-out;
-    }
-
-    @keyframes bonusFlash {
-      0% {
-        opacity: 0;
-        transform: scale(1);
-      }
-      15% {
-        opacity: 1;
-        transform: scale(1.05);
-      }
-      30% {
-        opacity: 0.6;
-      }
-      50% {
-        opacity: 0.8;
-      }
-      70% {
-        opacity: 0.3;
-      }
-      100% {
-        opacity: 0;
-        transform: scale(1);
-      }
-    }
-
-    #gameover-screen .final-score,
-    #gameover-screen .final-lines {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 40px;
-      color: #dcee2d;
-      margin: 10px 0;
-    }
-
-    #gameover-screen .final-score-value,
-    #gameover-screen .final-lines-value {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 60px;
-      color: #656565;
-    }
-
-    #gameover-screen .restart-hint {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 30px;
-      color: #656565;
-      margin-top: 3rem;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    /* === SCOREBOARD === */
-    #scoreboard-screen {
-      background: transparent !important; /* Sin fondo para ver los cubos */
-      padding: 80px 40px;
-    }
-
-    #scoreboard-screen .scoreboard-title {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 80px;
-      color: #dcee2d;
-      margin-bottom: 60px;
-      letter-spacing: -0.88px;
-      text-align: center;
-    }
-
-    .scoreboard-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      max-width: 800px;
-      width: 100%;
-      margin: 0 auto;
-      border: 3px solid #dcee2d;
-      background: rgba(33, 31, 35, 0.95);
-    }
-
-    .scoreboard-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 25px 50px;
-      background: transparent;
-      border-bottom: 2px solid rgba(220, 238, 45, 0.3);
-      transition: background 0.2s ease;
-    }
-
-    .scoreboard-item:last-child {
-      border-bottom: none;
-    }
-
-    .scoreboard-item:hover {
-      background: rgba(220, 238, 45, 0.1);
-    }
-
-    .scoreboard-item .rank {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      font-size: 50px;
-      color: #dcee2d;
-      min-width: 80px;
-    }
-
-    .scoreboard-item .score {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: 60px;
-      color: #dcee2d;
-      flex: 1;
-      text-align: center;
-      letter-spacing: -0.66px;
-    }
-
-    .scoreboard-item .lines {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 40px;
-      color: #656565;
-      min-width: 120px;
-      text-align: right;
-    }
-
-    .scoreboard-empty {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 45px;
-      color: #656565;
-      padding: 80px 40px;
-      text-align: center;
-      border: 3px solid rgba(220, 238, 45, 0.3);
-      background: rgba(33, 31, 35, 0.95);
-      max-width: 800px;
-      margin: 0 auto;
-    }
-  </style>
+  <!-- MIDI Player Scripts -->
+  <script src='./assets/audio/midiplayer/WebAudioFontPlayer.js'></script>
+  <script src='./assets/audio/midiplayer/MIDIFile.js'></script>
+  <script src='./assets/audio/midiplayer/MIDIPlayer.js'></script>
 </head>
 
 <body>
@@ -550,21 +34,18 @@
     <div class="game-ui-container">
       <!-- HEADER -->
       <div id="game-header" class="game-header">
-        <!-- Sección superior: fondo negro con logo centrado -->
         <div class="header-top-section">
-          <img src="logo.png" alt="Hygrid" class="logo-top">
+          <img src="assets/images/logo.png" alt="Logo" class="logo-top">
         </div>
-        
-        <!-- Color zones debajo -->
         <div class="color-zones-row">
           <div class="zone zone-red">
-            <span class="zone-text">PUBLIC</span>
+            <span class="zone-text">RED</span>
           </div>
           <div class="zone zone-blue">
-            <span class="zone-text">PRIVATE</span>
+            <span class="zone-text">BLUE</span>
           </div>
           <div class="zone zone-green">
-            <span class="zone-text">ON PREM</span>
+            <span class="zone-text">GREEN</span>
           </div>
         </div>
       </div>
@@ -575,490 +56,90 @@
       <!-- FOOTER -->
       <div id="game-footer" class="game-footer">
         <div class="footer-content">
-          <!-- Score a la izquierda -->
+          <!-- Score -->
           <div class="score-display">
             <div class="score-label">Score</div>
-            <div id="current-score" class="score-value">
-              <span class="score-gray">000</span><span class="score-yellow">1250</span>
-            </div>
+            <div id="score-value" class="score-value score-gray">000000</div>
           </div>
-          
-          <!-- Logo en el centro -->
+
+          <!-- Logo con efecto de llenado -->
           <div class="footer-logo">
             <div class="logo-container">
+              <img src="./assets/images/union-logo-filled.svg" alt="Logo Base" class="logo-base">
               <div id="logo-fill-wrapper" class="logo-fill-wrapper">
-                <img src="./union-logo-full.svg" alt="Logo Fill" class="logo-fill">
+                <img src="./assets/images/union-logo-full.svg" alt="Logo Fill" class="logo-fill">
               </div>
-              <img src="./union-logo-filled.svg" alt="Logo Base" class="logo-base">
             </div>
           </div>
-          
-          <!-- Level a la derecha con fondo amarillo -->
+
+          <!-- Level -->
           <div class="level-display-footer">
             <div class="level-label-footer">Level</div>
-            <div id="level-number-footer" class="level-number-footer">000</div>
+            <div id="level-number-footer" class="level-number-footer">01</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- PANTALLAS FULLSCREEN (IDLE, INTRO, GAME OVER, SCOREBOARD) -->
+    <!-- PANTALLAS FULLSCREEN -->
     <div class="overlay-screens">
       <!-- IDLE -->
       <div id="idle-screen" class="screen">
-        <img src="logo.png" alt="HyGrid" class="idle-logo">
+        <img src="./assets/images/union-logo-full.svg" alt="Tetris Logo" class="idle-logo">
       </div>
 
       <!-- INTRO -->
       <div id="intro-screen" class="screen">
-        <div class="intro-message">GET READY!</div>
-        <div class="countdown">3</div>
+        <div class="intro-message">Get Ready!</div>
+        <div id="countdown-number" class="countdown">3</div>
       </div>
 
       <!-- GAME OVER -->
       <div id="gameover-screen" class="screen">
         <div class="gameover-message">GAME OVER</div>
-        <div class="final-score">
-          SCORE: <span id="final-score-value" class="final-score-value">0000</span>
-        </div>
-        <div class="final-lines">
-          LINES: <span id="final-lines-value" class="final-lines-value">000</span>
-        </div>
-        <div class="restart-hint">Press any key to continue</div>
+        <div class="final-score">Score: <span id="final-score-value" class="final-score-value">0</span></div>
+        <div class="final-lines">Lines: <span id="final-lines-value" class="final-lines-value">0</span></div>
+        <div class="restart-hint">Press any key to restart</div>
       </div>
 
       <!-- SCOREBOARD -->
       <div id="scoreboard-screen" class="screen">
-        <div class="scoreboard-title">HIGH SCORES</div>
-        <div class="scoreboard-list"></div>
-        <div class="restart-hint" style="margin-top: 40px;">Press any key to continue</div>
+        <div class="scoreboard-title">TOP SCORES</div>
+        <div id="scoreboard-list" class="scoreboard-list"></div>
       </div>
 
-      <!-- POWER-UP OVERLAY -->
-      <div id="powerup-overlay" class="screen" style="background: rgba(0,0,0,0.7); pointer-events: none;">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 944'%3E%3Cpath d='M-145,904 L-145,1848.48 L879.43,1848.48 L879.43,904 Z M0,1100 L325,460 L650,1100 Z M405,671 L876,1848 L405,1100 Z' fill='none' stroke='%23dcee2d' stroke-width='3'/%3E%3C/svg%3E" 
-             alt="Power Up" 
-             style="width: 60%; max-width: 600px; height: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-      </div>
+      <!-- POWER-UP OVERLAY (sin fondo oscuro) -->
+      <div id="powerup-overlay" class="screen"></div>
 
       <!-- LEVEL UP OVERLAY -->
-      <div id="levelup-overlay" class="screen" style="background: rgba(0,0,0,0.7); pointer-events: none;">
-        <div style="text-align: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%;">
-          <div style="font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 120px; color: #dcee2d; letter-spacing: -1.32px; text-align: center;">
-            LEVEL <span id="levelup-number"></span>
-          </div>
-        </div>
-      </div>
+      <div id="levelup-overlay" class="screen"></div>
     </div>
   </div>
 
+  <!-- Control de música por visibilidad del tab -->
   <script>
-    // Función para escalar la UI manteniendo la proporción de 1166x1920
-    function scaleUI() {
-      const targetWidth = 1166;
-      const targetHeight = 1920;
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      
-      const scaleX = windowWidth / targetWidth;
-      const scaleY = windowHeight / targetHeight;
-      const scale = Math.min(scaleX, scaleY);
-      
-      const elements = [
-        document.getElementById('game-canvas'),
-        document.querySelector('.ui-overlay')
-      ];
-      
-      elements.forEach(element => {
-        if (element) {
-          element.style.transform = `translate(-50%, -50%) scale(${scale})`;
-        }
-      });
-    }
-    
-    window.addEventListener('load', scaleUI);
-    window.addEventListener('resize', scaleUI);
-    scaleUI();
-
-    // === SISTEMA DE LLENADO DEL LOGO ===
-    window.updateLogoFill = function(score, maxScore = 10000) {
-      const logoFillWrapper = document.getElementById('logo-fill-wrapper');
-      if (!logoFillWrapper) return;
-      
-      // Calcular porcentaje de llenado (0-100%)
-      const percentage = Math.min(100, (score / maxScore) * 100);
-      // Ajustar altura del wrapper para revelar el logo de abajo hacia arriba
-      logoFillWrapper.style.height = `${percentage}%`;
-      
-      // Cuando llega a 10K puntos, activar animación de brillo completo
-      if (percentage >= 100) {
-        logoFillWrapper.classList.add('filled');
-      } else {
-        logoFillWrapper.classList.remove('filled');
-      }
-    };
-
-    // === SISTEMA DE INDICADOR DE BONUS AMARILLO ===
-    window.showYellowBonus = function(timeRemaining) {
-      const indicator = document.getElementById('yellow-bonus-indicator');
-      const timer = document.getElementById('bonus-timer');
-      if (!indicator || !timer) return;
-      
-      indicator.classList.add('active');
-      timer.textContent = `${Math.ceil(timeRemaining)}s`;
-    };
-
-    window.hideYellowBonus = function() {
-      const indicator = document.getElementById('yellow-bonus-indicator');
-      if (!indicator) return;
-      indicator.classList.remove('active');
-    };
-
-    // === SISTEMA DE NIVEL ===
-    window.updateLevel = function(level) {
-      const levelFooter = document.getElementById('level-number-footer');
-      if (levelFooter) {
-        levelFooter.textContent = level.toString().padStart(3, '0');
-      }
-    };
-
-    // === SISTEMA DE MÚSICA (MIDI PLAYER) ===
-    // NOTA: MIDIPlayer crea su propio AudioContext internamente con startLoad()
-    var midiPlayer = null;
-    var musicStarted = false;
-    var musicTempo = 1.0;
-    
-    // Inicializar el reproductor MIDI
-    function initMIDIPlayer() {
-      try {
-        console.log('🎵 Inicializando MIDI Player...');
-        
-        // Crear MIDIPlayer (crea su AudioContext internamente)
-        midiPlayer = new MIDIPlayer();
-        midiPlayer.debug = false; // Desactivar logs excesivos
-        console.log('✅ MIDIPlayer creado');
-        
-        // Cargar archivo MIDI
-        console.log('📥 Cargando archivo MIDI...');
-        var request = new XMLHttpRequest();
-        request.open('GET', './midiplayer/dance.mid', true);
-        request.responseType = 'arraybuffer';
-        
-        request.onload = function() {
-          try {
-            console.log('📥 Archivo descargado:', request.response.byteLength, 'bytes');
-            
-            // Parsear MIDI
-            var arrayBuffer = request.response;
-            var midiFile = new MIDIFile(arrayBuffer);
-            var song = midiFile.parseSong();
-            
-            console.log('📊 MIDI parseado - Tracks:', song.tracks?.length, 'Duration:', song.duration + 's');
-            
-            // MÉTODO CORRECTO: startLoad() crea AudioContext y carga instrumentos
-            midiPlayer.startLoad(song);
-            
-            // Bajar volumen de la música MIDI
-            if (midiPlayer.loader && midiPlayer.loader.player) {
-              midiPlayer.loader.player.volume = 0.2; // Volumen reducido a 20%
-            }
-            
-            console.log('✅ MIDI listo! (Instrumentos cargándose en background)');
-            
-          } catch (error) {
-            console.error('❌ Error parseando MIDI:', error);
-          }
-        };
-        
-        request.onerror = function() {
-          console.error('❌ Error descargando MIDI');
-        };
-        
-        request.send();
-        
-      } catch (error) {
-        console.error('❌ Error inicializando MIDI player:', error);
-      }
-    }
-    
-    // Inicializar al cargar la página
-    initMIDIPlayer();
-    
-    // === SISTEMA DE EFECTOS DE SONIDO (SFX) ===
-    var sfxAudioContext = null;
-    
-    try {
-      var AudioContextFunc2 = window.AudioContext || window.webkitAudioContext;
-      sfxAudioContext = new AudioContextFunc2();
-      console.log('✅ AudioContext para SFX inicializado');
-    } catch (error) {
-      console.error('❌ Error inicializando AudioContext para SFX:', error);
-    }
-    
-    function play8bitNote(frequency, duration, startTime, type) {
-      if (!sfxAudioContext) return;
-      
-      var oscillator = sfxAudioContext.createOscillator();
-      var gainNode = sfxAudioContext.createGain();
-      
-      oscillator.type = type || 'square';
-      oscillator.frequency.value = frequency;
-      oscillator.connect(gainNode);
-      gainNode.connect(sfxAudioContext.destination);
-      gainNode.gain.setValueAtTime(0.5, startTime); // Aumentado a 0.5 para mayor volumen
-      gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-      
-      oscillator.start(startTime);
-      oscillator.stop(startTime + duration);
-    }
-    
-    window.playLineClearSFX = function() {
-      if (!sfxAudioContext) return;
-      var now = sfxAudioContext.currentTime;
-      play8bitNote(523.25, 0.1, now, 'square');
-      play8bitNote(659.25, 0.1, now + 0.1, 'square');
-      play8bitNote(783.99, 0.15, now + 0.2, 'square');
-    };
-    
-    window.playBonusSFX = function() {
-      if (!sfxAudioContext) return;
-      var now = sfxAudioContext.currentTime;
-      play8bitNote(523.25, 0.08, now, 'triangle');
-      play8bitNote(659.25, 0.08, now + 0.08, 'triangle');
-      play8bitNote(783.99, 0.08, now + 0.16, 'triangle');
-      play8bitNote(1046.50, 0.2, now + 0.24, 'triangle');
-    };
-    
-    window.playEnterBonusSFX = function() {
-      if (!sfxAudioContext) return;
-      var now = sfxAudioContext.currentTime;
-      play8bitNote(1046.50, 0.1, now, 'sine');
-      play8bitNote(1318.51, 0.15, now + 0.1, 'sine');
-    };
-    
-    window.playLevelUpSFX = function() {
-      if (!sfxAudioContext) return;
-      var now = sfxAudioContext.currentTime;
-      play8bitNote(523.25, 0.1, now, 'square');
-      play8bitNote(659.25, 0.1, now + 0.1, 'square');
-      play8bitNote(783.99, 0.1, now + 0.2, 'square');
-      play8bitNote(1046.50, 0.2, now + 0.3, 'square');
-    };
-    
-    // SFX para pieza colocada correctamente (sonido de madera chiptune - toc corto)
-    window.playCorrectPieceSFX = function() {
-      if (!sfxAudioContext) return;
-      var now = sfxAudioContext.currentTime;
-      // Sonido de madera golpeando: nota grave corta con sawtooth (simula impacto de madera)
-      play8bitNote(110.00, 0.04, now, 'sawtooth');      // A2 muy grave (golpe seco)
-      play8bitNote(220.00, 0.03, now + 0.02, 'sawtooth'); // A3 rebote
-    };
-    
-    // SFX para pieza colocada incorrectamente (sonido de madera hueca - toc más largo)
-    window.playIncorrectPieceSFX = function() {
-      if (!sfxAudioContext) return;
-      var now = sfxAudioContext.currentTime;
-      // Sonido de madera hueca/error: notas graves con más duración
-      play8bitNote(98.00, 0.08, now, 'sawtooth');       // G2 grave (madera hueca)
-      play8bitNote(82.41, 0.10, now + 0.06, 'sawtooth'); // E2 más grave (eco)
-    };
-    
-    window.triggerBonusFlash = function() {
-      var overlay = document.getElementById('bonus-flash-overlay');
-      if (!overlay) return;
-      overlay.classList.remove('flash-active');
-      void overlay.offsetWidth;
-      overlay.classList.add('flash-active');
-      setTimeout(function() {
-        overlay.classList.remove('flash-active');
-      }, 1000);
-    };
-    
-    // Mostrar overlay de power-up
-    window.showPowerUpOverlay = function() {
-      var overlay = document.getElementById('powerup-overlay');
-      if (!overlay) return;
-      overlay.style.display = 'flex';
-      setTimeout(function() {
-        overlay.style.display = 'none';
-      }, 2000); // Mostrar por 2 segundos
-    };
-    
-    // Mostrar overlay de level up
-    window.showLevelUpOverlay = function(level) {
-      var overlay = document.getElementById('levelup-overlay');
-      var numberSpan = document.getElementById('levelup-number');
-      if (!overlay || !numberSpan) return;
-      
-      // Formatear el nivel como "008" (3 dígitos con ceros a la izquierda)
-      var levelStr = level.toString().padStart(3, '0');
-      var firstTwo = levelStr.substring(0, 2);
-      var lastOne = levelStr.substring(2);
-      
-      numberSpan.innerHTML = '<span style="color: #656565;">' + firstTwo + '</span>' + 
-                             '<span style="color: #dcee2d;">' + lastOne + '</span>';
-      
-      overlay.style.display = 'flex';
-      setTimeout(function() {
-        overlay.style.display = 'none';
-      }, 2000); // Mostrar por 2 segundos
-    };
-    
-    window.startMusic = function() {
-      console.log('🎵 startMusic() llamado');
-      
-      if (!midiPlayer) {
-        console.error('❌ midiPlayer no existe');
-        return;
-      }
-      
-      if (musicStarted) {
-        console.log('⚠️ Música ya está sonando');
-        return;
-      }
-      
-      try {
-        // Reanudar SFX AudioContext si existe
-        if (sfxAudioContext && sfxAudioContext.state === 'suspended') {
-          sfxAudioContext.resume().catch(e => console.warn('SFX resume falló:', e));
-        }
-        
-        // Usar el método play() de MIDIPlayer (maneja AudioContext internamente)
-        console.log('🎵 Iniciando reproducción MIDI...');
-        
-        // Bajar volumen de la música antes de reproducir
-        if (midiPlayer.loader && midiPlayer.loader.player) {
-          midiPlayer.loader.player.volume = 0.2; // Volumen reducido a 20%
-        }
-        
-        midiPlayer.play();
-        musicStarted = true;
-        console.log('✅ Música iniciada!');
-        
-      } catch (error) {
-        console.error('❌ Error iniciando música:', error);
-        console.error('Stack:', error.stack);
-      }
-    };
-    
-    window.pauseMusic = function() {
-      if (!midiPlayer || !musicStarted) {
-        console.log('⚠️ No se puede pausar: midiPlayer o música no iniciada');
-        return;
-      }
-      try {
-        midiPlayer.pause();
-        console.log('⏸️ Música pausada');
-      } catch (error) {
-        console.error('❌ Error pausando música:', error);
-      }
-    };
-    
-    window.stopMusic = function() {
-      if (!midiPlayer) {
-        console.log('⚠️ No se puede detener: midiPlayer no existe');
-        return;
-      }
-      try {
-        midiPlayer.stop();
-        musicStarted = false;
-        console.log('⏹️ Música detenida');
-      } catch (error) {
-        console.error('❌ Error deteniendo música:', error);
-      }
-    };
-    
-    window.setMusicTempo = function(tempo) {
-      if (!midiPlayer) {
-        console.log('⚠️ No se puede cambiar tempo: midiPlayer no disponible');
-        return;
-      }
-      try {
-        musicTempo = Math.max(0.25, Math.min(3.0, tempo));
-        
-        // MIDIPlayer tiene método setTempo() nativo
-        if (typeof midiPlayer.setTempo === 'function') {
-          midiPlayer.setTempo(musicTempo);
-          console.log('🎵 Tempo ajustado a:', musicTempo + 'x (' + Math.round(musicTempo * 100) + '%)');
-        } else {
-          console.warn('⚠️ setTempo() no disponible en midiPlayer');
-        }
-        
-      } catch (error) {
-        console.error('❌ Error ajustando tempo:', error);
-      }
-    };
-    
-    window.resetMusicTempo = function() {
-      if (!midiPlayer) return;
-      try {
-        musicTempo = 1.0;
-        
-        if (typeof midiPlayer.setTempo === 'function') {
-          midiPlayer.setTempo(1.0);
-          console.log('🎵 Tempo restaurado a 1.0x (100%)');
-        }
-        
-      } catch (error) {
-        console.error('❌ Error restaurando tempo:', error);
-      }
-    };
-  </script>
-
-  <script>
-    // Función de debug para verificar el estado del MIDI
-    window.debugMIDI = function() {
-      console.log('=== MIDI PLAYER DEBUG ===');
-      console.log('midiPlayer existe:', !!midiPlayer);
-      console.log('midiPlayer.song existe:', !!(midiPlayer && midiPlayer.song));
-      console.log('midiAudioContext existe:', !!midiAudioContext);
-      console.log('midiAudioContext.state:', midiAudioContext ? midiAudioContext.state : 'N/A');
-      console.log('musicStarted:', musicStarted);
-      console.log('midiWebAudioFontPlayer existe:', !!midiWebAudioFontPlayer);
-      
-      if (midiPlayer && midiPlayer.song) {
-        console.log('Song tracks:', midiPlayer.song.tracks?.length);
-        console.log('Song tempo:', midiPlayer.song.tempo);
-      }
-      
-      console.log('=== FIN DEBUG ===');
-    };
-    
-    // Debug automático 2 segundos después de cargar
-    setTimeout(() => {
-      console.log('🔍 Verificación automática del MIDI:');
-      window.debugMIDI();
-    }, 2000);
-  </script>
- 
-  <script>
-    // === CONTROL DE MÚSICA POR VISIBILIDAD DEL TAB ===
     var wasMusicPlayingBeforeHide = false;
     
     document.addEventListener('visibilitychange', function() {
       if (document.hidden) {
-        // El tab está oculto - pausar música
-        console.log('👁️ Tab oculto - pausando música');
-        if (musicStarted && midiPlayer) {
+        // Tab oculto: pausar música
+        if (window.midiPlayer && window.musicStarted) {
           wasMusicPlayingBeforeHide = true;
           window.pauseMusic();
         }
       } else {
-        // El tab está visible - reanudar música si estaba sonando
-        console.log('👁️ Tab visible - reanudando música');
-        if (wasMusicPlayingBeforeHide && midiPlayer) {
-          try {
-            midiPlayer.play();
-            console.log('✅ Música reanudada');
-          } catch (error) {
-            console.error('❌ Error reanudando música:', error);
-          }
+        // Tab visible: reanudar música si estaba sonando
+        if (wasMusicPlayingBeforeHide) {
+          window.startMusic();
           wasMusicPlayingBeforeHide = false;
         }
       }
     });
   </script>
 
-  <script type="module" src="./game.js"></script>
+  <!-- Cargar controladores y aplicación principal -->
+  <script type="module" src="./src/ui/UIController.js"></script>
+  <script type="module" src="./src/audio/AudioController.js"></script>
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>

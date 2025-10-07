@@ -1,0 +1,234 @@
+/* === OVERLAY SCREENS (FULLSCREEN) === */
+.overlay-screens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  text-align: center;
+  pointer-events: all;
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* === PANTALLA IDLE === */
+#idle-screen {
+  justify-content: center;
+  align-items: center;
+  background: transparent !important;
+}
+
+#idle-screen .idle-logo {
+  width: 400px;
+  height: auto;
+  animation: floatLogo 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(220, 238, 45, 0.3));
+}
+
+/* === PANTALLA INTRO === */
+#intro-screen .intro-message {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 60px;
+  color: #dcee2d;
+  letter-spacing: -0.66px;
+  margin-bottom: 2rem;
+  animation: scaleIn 0.5s ease-out;
+  line-height: 1.5;
+}
+
+#intro-screen .countdown {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 120px;
+  color: #dcee2d;
+  letter-spacing: -1.3px;
+  animation: countdownPulse 1s ease-in-out infinite;
+  line-height: 1.5;
+}
+
+/* === PANTALLA GAME OVER === */
+#gameover-screen .gameover-message {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 80px;
+  color: #cf4526;
+  letter-spacing: -0.88px;
+  margin-bottom: 2rem;
+  animation: shake 0.5s ease-in-out;
+  line-height: 1.5;
+}
+
+#gameover-screen .final-score,
+#gameover-screen .final-lines {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 40px;
+  color: #dcee2d;
+  margin: 10px 0;
+}
+
+#gameover-screen .final-score-value,
+#gameover-screen .final-lines-value {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 60px;
+  color: #656565;
+}
+
+#gameover-screen .restart-hint {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 30px;
+  color: #656565;
+  margin-top: 3rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* === SCOREBOARD === */
+#scoreboard-screen {
+  background: transparent !important;
+  padding: 80px 40px;
+}
+
+#scoreboard-screen .scoreboard-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 80px;
+  color: #dcee2d;
+  margin-bottom: 60px;
+  letter-spacing: -0.88px;
+  text-align: center;
+}
+
+.scoreboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  border: 3px solid #dcee2d;
+  background: rgba(33, 31, 35, 0.95);
+}
+
+.scoreboard-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 50px;
+  background: transparent;
+  border-bottom: 2px solid rgba(220, 238, 45, 0.3);
+  transition: background 0.2s ease;
+}
+
+.scoreboard-item:last-child {
+  border-bottom: none;
+}
+
+.scoreboard-item:hover {
+  background: rgba(220, 238, 45, 0.1);
+}
+
+.scoreboard-item .rank {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 50px;
+  color: #dcee2d;
+  min-width: 80px;
+}
+
+.scoreboard-item .score {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 60px;
+  color: #dcee2d;
+  flex: 1;
+  text-align: center;
+  letter-spacing: -0.66px;
+}
+
+.scoreboard-item .lines {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 40px;
+  color: #656565;
+  min-width: 120px;
+  text-align: right;
+}
+
+.scoreboard-empty {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 45px;
+  color: #656565;
+  padding: 80px 40px;
+  text-align: center;
+  border: 3px solid rgba(220, 238, 45, 0.3);
+  background: rgba(33, 31, 35, 0.95);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* === BONUS FLASH OVERLAY === */
+#bonus-flash-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(220, 238, 45, 0.4) 0%, rgba(220, 238, 45, 0) 70%);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
+}
+
+#bonus-flash-overlay.flash-active {
+  animation: bonusFlash 1s ease-out;
+}
+
+/* === POWER-UP OVERLAY === */
+#powerup-overlay {
+  background: transparent !important;
+  pointer-events: none;
+  justify-content: flex-start;
+  padding-top: 35%;
+}
+
+#powerup-overlay img {
+  width: 440px;
+  height: auto;
+  animation: scaleIn 0.3s ease-out;
+  filter: drop-shadow(0 0 30px rgba(220, 238, 45, 0.6));
+}
+
+/* === LEVEL UP OVERLAY === */
+#levelup-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  justify-content: flex-start;
+  padding-top: 35%;
+}
+
+#levelup-overlay img {
+  width: 428px;
+  height: auto;
+  animation: scaleIn 0.4s ease-out;
+  filter: drop-shadow(0 0 30px rgba(220, 238, 45, 0.6));
+}

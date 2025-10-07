@@ -1,0 +1,30 @@
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+.cache/
+
+# Legacy files (puedes descomentar para ignorarlos después de verificar)
+# game.js
+# game-new.js
+# App.js
+# GameStateManager.js
+# IdleScene.js
+# TetrisGame.js
+# cube.png
+# logo.png
+# union-logo-*.svg
+# midiplayer/
