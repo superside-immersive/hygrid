@@ -372,39 +372,45 @@ class IdleScene {
         this.camera.bottom = -frustumSize;
         this.camera.updateProjectionMatrix();
         
-        // Posicionar cámara con rotación picada del 15%
-        this.camera.position.set(0, 2, 8); // Ligeramente arriba y adelante
+        // Posicionar cámara con rotación picada del 15% y leve rotación horizontal
+        this.camera.position.set(1.5, 2, 8); // Ligeramente desplazada horizontalmente
         this.camera.lookAt(0, 0, 0);
         this.camera.rotation.x = -0.15 * Math.PI; // 15% de rotación hacia abajo
+        this.camera.rotation.y = 0.1 * Math.PI; // Leve rotación horizontal
         
-        // Crear 15 cubos en grilla ordenada 3x5 con profundidad
-        const rows = 5;
-        const cols = 3;
+        // Crear grilla 3x6x4 (ancho x alto x profundidad)
+        const cols = 3; // ancho (X)
+        const rows = 6; // alto (Y)
+        const depth = 4; // profundidad (Z)
         const spacing = 1.2; // Espaciado entre cubos
-        const depthLayers = 3; // Capas de profundidad
         
-        let cubeIndex = 0;
-        for (let layer = 0; layer < depthLayers && cubeIndex < 15; layer++) {
-            for (let row = 0; row < rows && cubeIndex < 15; row++) {
-                for (let col = 0; col < cols && cubeIndex < 15; col++) {
-                    const cube = this.createIdleCube();
-                    
-                    // Posición en grilla con offset centrado
-                    const x = (col - (cols - 1) / 2) * spacing;
-                    const y = (row - (rows - 1) / 2) * spacing;
-                    const z = -layer * spacing * 1.5; // Profundidad en capas
-                    
-                    cube.position.set(x, y, z);
-                    
-                    // Sin rotación - cubos alineados perfectamente
-                    cube.rotation.set(0, 0, 0);
-                    
-                    this.scene.add(cube);
-                    this.idleCubes.push(cube);
-                    cubeIndex++;
+        // Generar posiciones posibles en la grilla
+        const gridPositions = [];
+        for (let z = 0; z < depth; z++) {
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    gridPositions.push({
+                        x: (x - (cols - 1) / 2) * spacing,
+                        y: (y - (rows - 1) / 2) * spacing,
+                        z: -z * spacing * 1.2
+                    });
                 }
             }
         }
+        
+        // Seleccionar 10 posiciones aleatorias
+        const shuffled = gridPositions.sort(() => Math.random() - 0.5);
+        const selectedPositions = shuffled.slice(0, 10);
+        
+        // Crear 10 cubos en las posiciones seleccionadas
+        selectedPositions.forEach(pos => {
+            const cube = this.createIdleCube();
+            cube.position.set(pos.x, pos.y, pos.z);
+            cube.rotation.set(0, 0, 0); // Sin rotación
+            
+            this.scene.add(cube);
+            this.idleCubes.push(cube);
+        });
     }
     
     hide() {
@@ -1518,12 +1524,17 @@ class App {
     }
     
     setupLights() {
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.9); // Más brillante para la escena idle
         this.scene.add(ambientLight);
         
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0); // Más intenso
         directionalLight.position.set(5, 10, 7.5);
         this.scene.add(directionalLight);
+        
+        // Luz adicional desde el frente para mejor visibilidad
+        const frontLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        frontLight.position.set(0, 0, 10);
+        this.scene.add(frontLight);
     }
     
     setupInput() {
