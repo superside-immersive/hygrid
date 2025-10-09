@@ -34,6 +34,11 @@ export class GameStateManager {
         const tryStart = () => {
             // Permitir iniciar desde IDLE y también desde SCOREBOARD visible
             if (this.currentState === 'idle') {
+                // Reproducir sonido de inicio inmediatamente al detectar la tecla
+                if (typeof window.playGameStartSFX === 'function') {
+                    window.playGameStartSFX();
+                }
+                
                 // Si está mostrando scoreboard, ocultarlo y arrancar
                 if (this.isShowingScoreboard) {
                     this.hideScoreboard();

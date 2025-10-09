@@ -39,7 +39,7 @@ export class AudioController {
         this.midiPlayer.onload = (song) => {
           console.log('✅ MIDIPlayer.onload: carga completa');
           // Establecer volumen suave al cargar
-          this.setMusicVolume(25); // 25% del volumen original
+          this.setMusicVolume(35); // 35% del volumen original (+10% más alto)
           // Si se pidió iniciar música antes de que terminara la carga
           if (this.pendingStart) {
             if (typeof this.midiPlayer.play === 'function') {
@@ -125,7 +125,7 @@ export class AudioController {
       const loaded = (typeof this.midiPlayer.getCurrentSong === 'function') ? this.midiPlayer.getCurrentSong() : null;
       if (loaded) {
         if (typeof this.midiPlayer.play === 'function') {
-          this.setMusicVolume(25); // Asegurar volumen suave
+          this.setMusicVolume(35); // Asegurar volumen suave
           this.midiPlayer.play();
           this.musicStarted = true;
           console.log('▶️ Música iniciada (play)');
@@ -322,6 +322,16 @@ export class AudioController {
     this.play8bitNote(440.00, 0.02, now + 0.015, 'sine', 0.12);
   }
 
+  playGameStartSFX() {
+    if (!this.sfxAudioContext) return;
+    const now = this.sfxAudioContext.currentTime;
+    // Secuencia ascendente retro que representa "¡Comenzar!"
+    this.play8bitNote(261.63, 0.08, now, 'square', 0.4);      // C4
+    this.play8bitNote(329.63, 0.08, now + 0.08, 'square', 0.4); // E4
+    this.play8bitNote(392.00, 0.08, now + 0.16, 'square', 0.4); // G4
+    this.play8bitNote(523.25, 0.15, now + 0.24, 'square', 0.5); // C5 - nota final más larga y fuerte
+  }
+
   debugMIDI() {
     console.log('=== MIDI DEBUG ===');
     console.log('MIDIPlayer exists:', typeof MIDIPlayer !== 'undefined');
@@ -367,6 +377,7 @@ window.playCorrectPieceSFX = () => audioController.playCorrectPieceSFX();
 window.playIncorrectPieceSFX = () => audioController.playIncorrectPieceSFX();
 window.playMoveLeftSFX = () => audioController.playMoveLeftSFX();
 window.playMoveRightSFX = () => audioController.playMoveRightSFX();
+window.playGameStartSFX = () => audioController.playGameStartSFX();
 window.debugMIDI = () => audioController.debugMIDI();
 
 // Debug automático
