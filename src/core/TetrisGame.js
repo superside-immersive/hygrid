@@ -837,12 +837,18 @@ export class TetrisGame {
                 if (this.canMovePieceTo(this.pieceX - 1, this.pieceY)) {
                     this.pieceX--;
                     this.renderCurrentPiece();
+                    if (typeof window.playMoveLeftSFX === 'function') {
+                        window.playMoveLeftSFX();
+                    }
                 }
                 break;
             case 'ArrowRight':
                 if (this.canMovePieceTo(this.pieceX + 1, this.pieceY)) {
                     this.pieceX++;
                     this.renderCurrentPiece();
+                    if (typeof window.playMoveRightSFX === 'function') {
+                        window.playMoveRightSFX();
+                    }
                 }
                 break;
             case 'ArrowDown':

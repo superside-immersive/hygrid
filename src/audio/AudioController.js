@@ -38,6 +38,8 @@ export class AudioController {
       try {
         this.midiPlayer.onload = (song) => {
           console.log('✅ MIDIPlayer.onload: carga completa');
+          // Establecer volumen suave al cargar
+          this.setMusicVolume(25); // 25% del volumen original
           // Si se pidió iniciar música antes de que terminara la carga
           if (this.pendingStart) {
             if (typeof this.midiPlayer.play === 'function') {
@@ -123,6 +125,7 @@ export class AudioController {
       const loaded = (typeof this.midiPlayer.getCurrentSong === 'function') ? this.midiPlayer.getCurrentSong() : null;
       if (loaded) {
         if (typeof this.midiPlayer.play === 'function') {
+          this.setMusicVolume(25); // Asegurar volumen suave
           this.midiPlayer.play();
           this.musicStarted = true;
           console.log('▶️ Música iniciada (play)');
@@ -183,6 +186,23 @@ export class AudioController {
     }
   }
 
+  setMusicVolume(volume) {
+    if (!this.midiPlayer) return;
+    
+    try {
+      // Establecer volumen más suave para todos los tracks
+      if (typeof this.midiPlayer.setVolume === 'function') {
+        // Iterar por todos los tracks disponibles (típicamente 0-15)
+        for (let track = 0; track < 16; track++) {
+          this.midiPlayer.setVolume(volume, track);
+        }
+        console.log(`🔊 Volumen de música ajustado a ${volume}%`);
+      }
+    } catch (error) {
+      console.error('❌ Error ajustando volumen:', error);
+    }
+  }
+
   resetMusicTempo() {
     this.setMusicTempo(1.0);
   }
@@ -222,7 +242,7 @@ export class AudioController {
     }
   }
 
-  play8bitNote(frequency, duration, startTime, type = 'square') {
+  play8bitNote(frequency, duration, startTime, type = 'square', volume = 0.5) {
     if (!this.sfxAudioContext) return;
     
     const oscillator = this.sfxAudioContext.createOscillator();
@@ -232,7 +252,7 @@ export class AudioController {
     oscillator.frequency.value = frequency;
     oscillator.connect(gainNode);
     gainNode.connect(this.sfxAudioContext.destination);
-    gainNode.gain.setValueAtTime(0.5, startTime);
+    gainNode.gain.setValueAtTime(volume, startTime);
     gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
     
     oscillator.start(startTime);
@@ -242,48 +262,64 @@ export class AudioController {
   playLineClearSFX() {
     if (!this.sfxAudioContext) return;
     const now = this.sfxAudioContext.currentTime;
-    this.play8bitNote(523.25, 0.1, now, 'square');
-    this.play8bitNote(659.25, 0.1, now + 0.1, 'square');
-    this.play8bitNote(783.99, 0.15, now + 0.2, 'square');
+    this.play8bitNote(523.25, 0.1, now, 'square', 0.3);
+    this.play8bitNote(659.25, 0.1, now + 0.1, 'square', 0.3);
+    this.play8bitNote(783.99, 0.15, now + 0.2, 'square', 0.3);
   }
 
   playBonusSFX() {
     if (!this.sfxAudioContext) return;
     const now = this.sfxAudioContext.currentTime;
-    this.play8bitNote(523.25, 0.08, now, 'triangle');
-    this.play8bitNote(659.25, 0.08, now + 0.08, 'triangle');
-    this.play8bitNote(783.99, 0.08, now + 0.16, 'triangle');
-    this.play8bitNote(1046.50, 0.2, now + 0.24, 'triangle');
+    this.play8bitNote(523.25, 0.08, now, 'triangle', 0.35);
+    this.play8bitNote(659.25, 0.08, now + 0.08, 'triangle', 0.35);
+    this.play8bitNote(783.99, 0.08, now + 0.16, 'triangle', 0.35);
+    this.play8bitNote(1046.50, 0.2, now + 0.24, 'triangle', 0.35);
   }
 
   playEnterBonusSFX() {
     if (!this.sfxAudioContext) return;
     const now = this.sfxAudioContext.currentTime;
-    this.play8bitNote(1046.50, 0.1, now, 'sine');
-    this.play8bitNote(1318.51, 0.15, now + 0.1, 'sine');
+    this.play8bitNote(1046.50, 0.1, now, 'sine', 0.4);
+    this.play8bitNote(1318.51, 0.15, now + 0.1, 'sine', 0.4);
   }
 
   playLevelUpSFX() {
     if (!this.sfxAudioContext) return;
     const now = this.sfxAudioContext.currentTime;
-    this.play8bitNote(523.25, 0.1, now, 'square');
-    this.play8bitNote(659.25, 0.1, now + 0.1, 'square');
-    this.play8bitNote(783.99, 0.1, now + 0.2, 'square');
-    this.play8bitNote(1046.50, 0.2, now + 0.3, 'square');
+    this.play8bitNote(523.25, 0.1, now, 'square', 0.35);
+    this.play8bitNote(659.25, 0.1, now + 0.1, 'square', 0.35);
+    this.play8bitNote(783.99, 0.1, now + 0.2, 'square', 0.35);
+    this.play8bitNote(1046.50, 0.2, now + 0.3, 'square', 0.35);
   }
 
   playCorrectPieceSFX() {
     if (!this.sfxAudioContext) return;
     const now = this.sfxAudioContext.currentTime;
-    this.play8bitNote(110.00, 0.04, now, 'sawtooth');
-    this.play8bitNote(220.00, 0.03, now + 0.02, 'sawtooth');
+    this.play8bitNote(110.00, 0.04, now, 'sawtooth', 0.25);
+    this.play8bitNote(220.00, 0.03, now + 0.02, 'sawtooth', 0.25);
   }
 
   playIncorrectPieceSFX() {
     if (!this.sfxAudioContext) return;
     const now = this.sfxAudioContext.currentTime;
-    this.play8bitNote(82.41, 0.06, now, 'sawtooth');
-    this.play8bitNote(110.00, 0.05, now + 0.04, 'sawtooth');
+    this.play8bitNote(82.41, 0.06, now, 'sawtooth', 0.25);
+    this.play8bitNote(110.00, 0.05, now + 0.04, 'sawtooth', 0.25);
+  }
+
+  playMoveLeftSFX() {
+    if (!this.sfxAudioContext) return;
+    const now = this.sfxAudioContext.currentTime;
+    // Sonido sutil descendente para movimiento izquierda
+    this.play8bitNote(440.00, 0.02, now, 'sine', 0.15);
+    this.play8bitNote(392.00, 0.02, now + 0.015, 'sine', 0.12);
+  }
+
+  playMoveRightSFX() {
+    if (!this.sfxAudioContext) return;
+    const now = this.sfxAudioContext.currentTime;
+    // Sonido sutil ascendente para movimiento derecha
+    this.play8bitNote(392.00, 0.02, now, 'sine', 0.15);
+    this.play8bitNote(440.00, 0.02, now + 0.015, 'sine', 0.12);
   }
 
   debugMIDI() {
@@ -320,6 +356,7 @@ window.pauseMusic = () => audioController.pauseMusic();
 window.stopMusic = () => audioController.stopMusic();
 window.setMusicTempo = (tempo) => audioController.setMusicTempo(tempo);
 window.resetMusicTempo = () => audioController.resetMusicTempo();
+window.setMusicVolume = (volume) => audioController.setMusicVolume(volume);
 window.toggleMusicMute = () => audioController.toggleMusicMute();
 window.isMusicMuted = () => !!audioController.musicMuted;
 window.playLineClearSFX = () => audioController.playLineClearSFX();
@@ -328,6 +365,8 @@ window.playEnterBonusSFX = () => audioController.playEnterBonusSFX();
 window.playLevelUpSFX = () => audioController.playLevelUpSFX();
 window.playCorrectPieceSFX = () => audioController.playCorrectPieceSFX();
 window.playIncorrectPieceSFX = () => audioController.playIncorrectPieceSFX();
+window.playMoveLeftSFX = () => audioController.playMoveLeftSFX();
+window.playMoveRightSFX = () => audioController.playMoveRightSFX();
 window.debugMIDI = () => audioController.debugMIDI();
 
 // Debug automático
