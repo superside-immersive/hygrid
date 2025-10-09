@@ -37,7 +37,7 @@ export class UIController {
   }
 
   // === SISTEMA DE LLENADO DEL LOGO ===
-  updateLogoFill(score, maxScore = 10000) {
+  updateLogoFill(score, maxScore = 5000) {
     const logoFillWrapper = document.getElementById('logo-fill-wrapper');
     if (!logoFillWrapper) return;
     
