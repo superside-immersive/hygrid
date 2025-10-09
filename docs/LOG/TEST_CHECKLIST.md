@@ -36,7 +36,7 @@
 - [x] Rotación de piezas
 - [x] Detección de zona correcta/incorrecta
 - [x] Sistema de puntuación
-- [x] Sistema de niveles (cada 3000 puntos)
+- [x] Sistema de niveles (cada 10000 puntos)
 - [x] Velocidad incrementa con nivel
 - [x] Game Over cuando no hay espacio
 
@@ -90,7 +90,7 @@
 4. **Verificar**: Flash rojo de error + cubo se vuelve gris
 
 ### Test 5: Niveles y Velocidad
-1. Alcanzar 3000 puntos (nivel 2)
+1. Alcanzar 10000 puntos (nivel 2)
 2. **Verificar**: 
    - Número de nivel cambia en header
    - Sonido de "level up"

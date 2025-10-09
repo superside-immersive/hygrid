@@ -139,7 +139,7 @@ clearEntireRow(row) {
 |--------|--------|--------|
 | Bloque bien colocado | **+100** | `correctColorBlocks * 100` |
 | Línea completada | **+500** | `500 * linesCleared` |
-| Nivel alcanzado | 0 (trigger visual/audio) | Cada 3000 puntos |
+| Nivel alcanzado | 0 (trigger visual/audio) | Cada 10000 puntos |
 | Bonus amarillo | 0 (trigger modo especial) | Cada 10000 puntos |
 
 ### 🎮 Ejemplos de puntaje por jugada:
@@ -160,10 +160,10 @@ clearEntireRow(row) {
 ### 🎯 Progresión de niveles:
 
 ```
-Nivel 1: 0 - 2,999 puntos
-Nivel 2: 3,000 - 5,999 puntos
-Nivel 3: 6,000 - 8,999 puntos
-Nivel 4: 9,000 - 11,999 puntos
+Nivel 1: 0 - 9,999 puntos
+Nivel 2: 10,000 - 19,999 puntos
+Nivel 3: 20,000 - 29,999 puntos
+Nivel 4: 30,000 - 39,999 puntos
 ...
 ```
 

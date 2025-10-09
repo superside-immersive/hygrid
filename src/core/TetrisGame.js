@@ -37,7 +37,7 @@ export class TetrisGame {
         this.badPieces = 0;
         this.isGameOver = false;
         this.level = 1;
-        this.LEVEL_THRESHOLD = 3000;
+        this.LEVEL_THRESHOLD = 10000;
         this.BASE_TICK_CYCLE = 25;
         this.SPEED_INCREASE_PER_LEVEL = 0.15;
         
@@ -421,9 +421,10 @@ export class TetrisGame {
             scoreElement.textContent = String(this.score).padStart(6, '0');
         }
         
-        // Actualizar logo fill
+        // Actualizar logo fill con progreso hacia el próximo power-up
         if (typeof window.updateLogoFill === 'function') {
-            window.updateLogoFill(this.score);
+            const progressScore = this.score - this.lastYellowModeScore;
+            window.updateLogoFill(progressScore);
         }
         
         const newLevel = Math.floor(this.score / this.LEVEL_THRESHOLD) + 1;
@@ -478,13 +479,13 @@ export class TetrisGame {
         
         this.restoreAllBlockColors();
         
-        const logoFillWrapper = document.getElementById('logo-fill-wrapper');
-        if (logoFillWrapper) {
-            logoFillWrapper.classList.remove('filled');
-            logoFillWrapper.style.height = '0%';
-        }
-        
+        // Actualizar lastYellowModeScore ANTES de resetear el logo
         this.lastYellowModeScore = this.score;
+        
+        // Resetear el logo fill usando el sistema updateLogoFill
+        if (typeof window.updateLogoFill === 'function') {
+            window.updateLogoFill(0); // Empezar desde 0 para el próximo power-up
+        }
         
         console.log('🔵 Modo amarillo desactivado - Próximo power-up en:', this.lastYellowModeScore + this.YELLOW_MODE_THRESHOLD);
     }

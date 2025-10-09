@@ -46,7 +46,7 @@ Abre: http://localhost:8000
 - [ ] Todas las piezas se vuelven amarillas
 
 ### 5. 📈 LEVEL UP (Nuevo) ✨
-**Acción:** Alcanza 3,000 puntos
+**Acción:** Alcanza 10,000 puntos
 
 **Verificar:**
 - [ ] Aparece SVG "Level Up!"

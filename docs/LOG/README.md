@@ -46,7 +46,7 @@ Colocar las piezas de colores en sus zonas correspondientes:
 
 ### Sistema de puntuación
 - **100 puntos** por cada sección completada correctamente
-- **Nivel**: Sube cada 3000 puntos
+- **Nivel**: Sube cada 10000 puntos
 - **Velocidad**: Aumenta 15% por nivel
 - **Modo Bonus**: Se activa cada 10000 puntos durante 5 segundos
 

@@ -94,7 +94,7 @@ clean/
 
 - **100 puntos** por cada sección completada correctamente
 
-- ✅ **Sistema de Zonas de Colores**: Coloca piezas rojas, azules y verdes en sus zonas- **Nivel**: Sube cada 3000 puntos
+- ✅ **Sistema de Zonas de Colores**: Coloca piezas rojas, azules y verdes en sus zonas- **Nivel**: Sube cada 10000 puntos
 
 - ✅ **Modo Power-Up Amarillo**: Cada 10,000 puntos, todas las piezas aceptadas- **Velocidad**: Aumenta 15% por nivel
 

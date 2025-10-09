@@ -9,9 +9,18 @@ export class AudioController {
     this.sfxAudioContext = null;
     this.parsedSong = null;
     this.pendingStart = false;
+    this.musicMuted = false;
     
     this.initMIDIPlayer();
     this.initSFXContext();
+
+    // Keybinding: toggle music mute (M)
+    this._handleKeydown = (e) => {
+      if (e.key === 'm' || e.key === 'M') {
+        this.toggleMusicMute();
+      }
+    };
+    document.addEventListener('keydown', this._handleKeydown);
   }
 
   // === MIDI PLAYER ===
@@ -92,6 +101,13 @@ export class AudioController {
       return;
     }
 
+    // Si está muteado, difiere el inicio hasta que se desmutee
+    if (this.musicMuted) {
+      this.pendingStart = true;
+      console.log('🔇 Música muteada: inicio diferido');
+      return;
+    }
+
     if (this.musicStarted) {
       if (typeof this.midiPlayer.resume === 'function') {
         this.midiPlayer.resume();
@@ -169,6 +185,30 @@ export class AudioController {
 
   resetMusicTempo() {
     this.setMusicTempo(1.0);
+  }
+
+  // === MUSIC MUTE TOGGLE ===
+  toggleMusicMute() {
+    this.musicMuted = !this.musicMuted;
+    window.musicMuted = this.musicMuted;
+    if (this.musicMuted) {
+      // Pausar música; los SFX permanecen activos
+      this.pauseMusic();
+      console.log('🔇 Música muteada (SFX activos). Pulsa M para activar.');
+    } else {
+      console.log('🔊 Música activada');
+      // Reanudar o iniciar si estaba pendiente
+      if (this.musicStarted) {
+        if (this.midiPlayer && typeof this.midiPlayer.resume === 'function') {
+          try { this.midiPlayer.resume(); } catch {}
+        } else if (this.midiPlayer && typeof this.midiPlayer.play === 'function') {
+          try { this.midiPlayer.play(); this.musicStarted = true; } catch {}
+        }
+      } else if (this.pendingStart || this.parsedSong) {
+        // Forzar inicio si había intención previa o ya hay song
+        try { this.startMusic(); } catch {}
+      }
+    }
   }
 
   // === EFECTOS DE SONIDO ===
@@ -280,6 +320,8 @@ window.pauseMusic = () => audioController.pauseMusic();
 window.stopMusic = () => audioController.stopMusic();
 window.setMusicTempo = (tempo) => audioController.setMusicTempo(tempo);
 window.resetMusicTempo = () => audioController.resetMusicTempo();
+window.toggleMusicMute = () => audioController.toggleMusicMute();
+window.isMusicMuted = () => !!audioController.musicMuted;
 window.playLineClearSFX = () => audioController.playLineClearSFX();
 window.playBonusSFX = () => audioController.playBonusSFX();
 window.playEnterBonusSFX = () => audioController.playEnterBonusSFX();
