@@ -1,102 +1,206 @@
-# 🎮 Tetris HyGrid# 🎮 Tetris Game - Versión Standalone con Three.js
+# 🎮 Tetris HyGrid
 
+Juego de Tetris con mecánica de zonas de colores, construido con Three.js y JavaScript modular.
 
+---
 
-Juego de Tetris con mecánica de zonas de colores, construido con Three.js y JavaScript modular.## 📋 Descripción
+## � Inicio Rápido
 
-Versión completamente autónoma del juego de Tetris usando Three.js puro (sin Needle Engine).
+### Para Jugar AHORA
+1. Abre el archivo `index.html` con doble click o desde tu navegador
+2. ¡Listo! Presiona cualquier tecla para jugar
 
-## 🚀 Inicio Rápido
+### Para Desarrollo
 
-## 🚀 Cómo ejecutar
+#### Opción 1: Live Server (Recomendado)
+1. Abre VS Code en esta carpeta
+2. Instala extensión "Live Server"
+3. Click derecho en `index.html` → "Open with Live Server"
 
-1. **Abrir el proyecto:**
+#### Opción 2: Python Server
+```bash
+python3 -m http.server 8000
+```
+Luego abre: http://localhost:8000
 
-   ```bash### Opción 1: Live Server (VS Code)
-
-   cd /Users/mpalenque/tetrisclean/clean1. Abre VS Code
-
-   ```2. Abre el archivo: `/clean/index.html`
-
-3. Click derecho → "Open with Live Server"
-
-2. **Abrir con Live Server:**4. El juego se abrirá en tu navegador
-
-   - Abre `index.html` en tu navegador, o
-
-   - Usa Live Server de VS Code para desarrollo### Opción 2: Navegador directo
-
-1. Navega a la carpeta `/clean`
-
-3. **¡Jugar!**2. Abre `index.html` directamente en tu navegador
-
-   - Presiona cualquier tecla para comenzar3. ⚠️ **IMPORTANTE**: Algunos navegadores bloquean módulos ES6 por seguridad. Si ves errores de CORS, usa Live Server.
-
-   - Flechas para mover piezas
-
-   - Flecha arriba o Espacio para rotar### Opción 3: Servidor HTTP simple
-
-   - Q para activar modo amarillo (debug)```bash
-
-cd /Users/mpalenque/Desktop/Unitytetris/Needle/newProject/clean
-
-## 📁 Estructura del Proyectopython3 -m http.server 8000
-
+#### Opción 3: Node.js
+```bash
+npx http-server
 ```
 
-```Luego abre: http://localhost:8000
+---
 
-clean/
+## 🎯 Controles
 
-├── src/main.js                # Punto de entrada## 🎯 Controles
+- **← →** = Mover pieza izquierda/derecha
+- **↓** = Bajar rápido
+- **↑ / Espacio** = Rotar pieza
+- **Q** = Modo amarillo (debug)
+- **Cualquier tecla** = Iniciar juego desde pantalla IDLE
 
-├── index.html                 # HTML principal
+---
 
-│- **⬅️ Flecha izquierda**: Mover pieza a la izquierda
+## 🎮 Mecánica del Juego
 
-├── src/                       # Código fuente- **➡️ Flecha derecha**: Mover pieza a la derecha
+### Objetivo
+Colocar las piezas de colores en sus zonas correspondientes:
+- 🔴 **Zona Roja** (columnas 0-3): Piezas/bloques rojos
+- 🔵 **Zona Azul** (columnas 4-7): Piezas/bloques azules
+- 🟢 **Zona Verde** (columnas 8-11): Piezas/bloques verdes
 
-│   ├── core/                  # Clases principales- **⬇️ Flecha abajo**: Acelerar caída
+### Piezas
+- Piezas de 2, 3 y 4 bloques
+- Algunas piezas tienen múltiples colores
+- Piezas multicolor pueden encajar en diferentes zonas
+- Si colocas una pieza en la zona incorrecta, se vuelve **GRIS** y no suma puntos
 
-│   │   ├── App.js            # Aplicación THREE.js- **⬆️ Flecha arriba / Espacio**: Rotar pieza
-
-│   │   └── TetrisGame.js     # Lógica del juego- **Cualquier tecla**: Iniciar juego desde pantalla IDLE
-
-│   ├── scenes/                # Escenas 3D
-
-│   │   └── IdleScene.js      # Escena idle## 🎮 Mecánica del juego
-
-│   └── managers/              # Gestores
-
-│       └── GameStateManager.js### Objetivo
-
-│Colocar las piezas de colores en sus zonas correspondientes:
-
-├── assets/                    # Recursos- 🔴 **Zona Roja** (columnas 0-3): Piezas/bloques rojos
-
-│   ├── images/               # Texturas e imágenes- 🔵 **Zona Azul** (columnas 4-7): Piezas/bloques azules
-
-│   └── audio/                # Sistema MIDI- 🟢 **Zona Verde** (columnas 8-11): Piezas/bloques verdes
-
-│
-
-└── docs/                      # Documentación### Piezas
-
-    ├── ESTRUCTURA.md         # Estructura detallada- Piezas de 2, 3 y 4 bloques
-
-    └── REFACTORIZACION.md    # Historia de refactorización- Algunas piezas tienen múltiples colores
-
-```- Piezas multicolor pueden encajar en diferentes zonas
-
-
-
-## 🎯 Características### Sistema de puntuación
-
+### Sistema de Puntuación
 - **100 puntos** por cada sección completada correctamente
+- **Nivel**: Sube cada 10,000 puntos
+- **Velocidad**: Aumenta 15% por nivel
 
-- ✅ **Sistema de Zonas de Colores**: Coloca piezas rojas, azules y verdes en sus zonas- **Nivel**: Sube cada 10000 puntos
+### Modo Bonus 🟡
+Cada 10,000 puntos se activa durante 5 segundos:
+- Todas las piezas se vuelven amarillas
+- Puedes colocar cualquier pieza en cualquier zona
+- ¡Aprovecha para completar más líneas!
 
-- ✅ **Modo Power-Up Amarillo**: Cada 10,000 puntos, todas las piezas aceptadas- **Velocidad**: Aumenta 15% por nivel
+---
+
+## 🎵 Sistema de Audio
+
+### Música
+- Música de fondo en formato MIDI
+- Se inicia automáticamente al comenzar el juego
+- Tempo se ajusta con el nivel
+
+### Efectos de Sonido (8-bit)
+- ✅ **Línea completada**: "Truin!" (3 notas ascendentes)
+- ⭐ **Entrar en bonus**: Chime brillante
+- 💎 **Alcanzar bonus**: Power-up
+- 📈 **Subir nivel**: Fanfare
+- ⬅️➡️ **Movimiento**: Tonos sutiles ascendentes/descendentes
+- ✅ **Pieza correcta**: Toc grave
+- ❌ **Pieza incorrecta**: Toc hueco
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+hygrid/
+├── index.html              ← HTML principal (refactorizado)
+├── README.md               ← Esta documentación
+│
+├── src/                    ← TODO EL CÓDIGO
+│   ├── main.js            ← Punto de entrada
+│   │
+│   ├── core/              ← Lógica del juego
+│   │   ├── App.js
+│   │   └── TetrisGame.js
+│   │
+│   ├── scenes/            ← Escenas 3D
+│   │   └── IdleScene.js
+│   │
+│   ├── managers/          ← Gestores de estado
+│   │   └── GameStateManager.js
+│   │
+│   ├── ui/                ← Controladores UI
+│   │   └── UIController.js
+│   │
+│   ├── audio/             ← Controladores Audio
+│   │   └── AudioController.js
+│   │
+│   └── styles/            ← Estilos CSS
+│       ├── main.css
+│       ├── ui.css
+│       └── overlays.css
+│
+├── assets/                 ← RECURSOS
+│   ├── images/            ← Texturas, logos, SVGs
+│   └── audio/             ← Sistema MIDI
+│       └── midiplayer/
+│
+└── docs/                   ← DOCUMENTACIÓN
+    └── CHANGELOG.md       ← Historial completo de cambios
+```
+
+---
+
+## 🎨 Características Técnicas
+
+### Arquitectura Modular
+- ✅ Código organizado en módulos ES6
+- ✅ Separación de responsabilidades clara
+- ✅ CSS extraído a archivos separados
+- ✅ Controladores especializados (UI, Audio)
+
+### Mejoras Visuales
+- ✅ Flash de éxito (verde) cuando la pieza se coloca correctamente
+- ✅ Flash de error (rojo) cuando la pieza se coloca incorrectamente
+- ✅ Overlays profesionales con SVGs
+- ✅ Animaciones suaves y pulidas
+
+### Sistema de Estados
+1. **IDLE**: Pantalla de inicio con cubos flotantes
+2. **INTRO**: Countdown 5-4-3-2-1-GO!
+3. **PLAYING**: Juego activo
+4. **GAME OVER**: Pantalla final con scoreboard
+
+---
+
+## 📊 Métricas de Refactorización
+
+| Métrica | Antes | Ahora | Mejora |
+|---------|-------|-------|--------|
+| **Líneas en index.html** | 1062 | 145 | **-86%** |
+| **CSS embebido** | 600+ líneas | 0 | **-100%** |
+| **JS embebido** | 400+ líneas | 50 | **-87%** |
+| **Archivos CSS** | 0 | 3 | +3 módulos |
+| **Controladores JS** | 0 | 2 | +2 clases |
+
+---
+
+## 🔧 Tecnologías Utilizadas
+
+- **Three.js** - Motor 3D
+- **Web Audio API** - Sistema de audio
+- **MIDI Player** - Música de fondo
+- **ES6 Modules** - Arquitectura modular
+- **CSS3** - Animaciones y estilos
+
+---
+
+## 📝 Historial de Cambios
+
+Ver archivo completo en `docs/CHANGELOG.md`
+
+### Versión Actual
+- ✅ Sistema de colores por zonas
+- ✅ Modo bonus amarillo completo
+- ✅ Sistema de audio MIDI + SFX
+- ✅ Refactorización HTML/CSS completada
+- ✅ Controladores modulares (UI/Audio)
+- ✅ Efectos visuales (flashes, overlays)
+
+---
+
+## 🎯 Verificación del Proyecto
+
+**Código completamente organizado:**
+- ✅ `src/main.js` - Entry point
+- ✅ `src/core/` - Lógica principal del juego
+- ✅ `src/scenes/` - Escenas 3D
+- ✅ `src/managers/` - Gestores de estado
+- ✅ `src/ui/` - Controladores de interfaz
+- ✅ `src/audio/` - Controladores de audio
+- ✅ `src/styles/` - Estilos CSS separados
+
+**Solo excepción:** `assets/audio/midiplayer/*.js` (librerías MIDI externas)
+
+---
+
+**¡Diviértete!** 🎮✨
 
 - ✅ **Sistema de Niveles**: Aumenta velocidad con el puntaje- **Modo Bonus**: Se activa cada 10000 puntos durante 5 segundos
 
