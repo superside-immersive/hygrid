@@ -227,16 +227,15 @@ export class TetrisGame {
             if (worldY >= 0 && worldY < this.boardHeight && worldX >= 0 && worldX < this.boardWidth) {
                 let blockColor = this.currentColor;
                 
-                if (this.currentPiece.blockColors) {
+                if (this.isYellowMode) {
+                    blockColor = this.getZoneColor(worldX);
+                }
+                else if (this.currentPiece.blockColors) {
                     const rotState = this.currentPiece.rotationState;
                     const blockColors = this.currentPiece.blockColors[rotState];
                     if (blockColors && blockColors[index] !== undefined) {
                         blockColor = blockColors[index];
                     }
-                }
-                
-                if (this.isYellowMode) {
-                    blockColor = this.currentColor;
                 }
                 
                 const cube = this.currentPieceCubes[index];
@@ -867,7 +866,7 @@ export class TetrisGame {
     
     isInCorrectZone(x, pieceColor) {
         const zoneColor = this.getZoneColor(x);
-        return zoneColor === pieceColor || this.isYellowMode;
+        return zoneColor === pieceColor;
     }
     
     getZoneColor(x) {
