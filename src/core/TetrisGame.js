@@ -759,7 +759,7 @@ export class TetrisGame {
         
         const textureLoader = new THREE.TextureLoader();
         const cubeTexture = textureLoader.load(
-            new URL('../../assets/images/cube.png', import.meta.url).href
+            new URL('../../assets/images/cube.jpg', import.meta.url).href
         );
         cubeTexture.colorSpace = THREE.SRGBColorSpace;
         

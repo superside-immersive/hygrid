@@ -35,7 +35,7 @@ export class IdleScene {
         
         const textureLoader = new THREE.TextureLoader();
         const cubeTexture = textureLoader.load(
-            new URL('../../assets/images/cube.png', import.meta.url).href
+            new URL('../../assets/images/cube_high.jpg', import.meta.url).href
         );
         cubeTexture.colorSpace = THREE.SRGBColorSpace;
         
