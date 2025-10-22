@@ -310,13 +310,23 @@ export class TetrisGame {
                     }
                 }
             } else {
-                const completedSections = this.checkColorSections(y);
+                const completedSections = this.checkAllColorSections(y);
                 
                 if (completedSections > 0) {
                     console.log(`🔥 ${completedSections} secciones completadas en fila ${y}`);
                     
-                    this.clearEntireRow(y);
-                    this.moveRowsDown(y);
+                    if (this.checkRedColorSection(y)) {
+                        this.clearRedColorSectionRow(y);
+                        this.moveRedColorSectionRowsDown(y);
+                    }
+                    if (this.checkBlueColorSection(y)) {
+                        this.clearBlueColorSectionRow(y);
+                        this.moveBlueColorSectionRowsDown(y);
+                    }
+                    if (this.checkGreenColorSection(y)) {
+                        this.clearGreenColorSectionRow(y);
+                        this.moveGreenColorSectionRowsDown(y);
+                    }
                     linesCleared++;
                     this.lines++;
                     y++;
@@ -357,13 +367,25 @@ export class TetrisGame {
         }
         return false;
     }
+
+    checkRedColorSection(row) {
+        return this.isSectionComplete(row, 0, 3, this.RED_COLOR);
+    }
+
+    checkBlueColorSection(row) {
+        return this.isSectionComplete(row, 4, 7, this.BLUE_COLOR);
+    }
+
+    checkGreenColorSection(row) {
+        return this.isSectionComplete(row, 8, 11, this.GREEN_COLOR);
+    }
     
-    checkColorSections(row) {
+    checkAllColorSections(row) {
         let completedSections = 0;
         
-        if (this.isSectionComplete(row, 0, 3, this.RED_COLOR)) completedSections++;
-        if (this.isSectionComplete(row, 4, 7, this.BLUE_COLOR)) completedSections++;
-        if (this.isSectionComplete(row, 8, 11, this.GREEN_COLOR)) completedSections++;
+        if (this.checkRedColorSection(row)) completedSections++;
+        if (this.checkBlueColorSection(row)) completedSections++;
+        if (this.checkGreenColorSection(row)) completedSections++;
         
         return completedSections;
     }
@@ -381,6 +403,51 @@ export class TetrisGame {
         return true;
     }
     
+    clearRedColorSectionRow(row) {
+        console.log(`🧹 Eliminando la fila ${row} de la sección de color rojo`);
+        
+        for (let x = 0; x < 4; x++) {
+            const cube = this.board[row][x];
+            if (cube) {
+                this.flashingCubes.delete(cube);
+                this.scene.remove(cube);
+                this.board[row][x] = null;
+            }
+        }
+        
+        console.log(`✅ Fila ${row} de la sección de color rojo eliminada`);
+    }
+    
+    clearBlueColorSectionRow(row) {
+        console.log(`🧹 Eliminando la fila ${row} de la sección de color azul`);
+        
+        for (let x = 4; x < 8; x++) {
+            const cube = this.board[row][x];
+            if (cube) {
+                this.flashingCubes.delete(cube);
+                this.scene.remove(cube);
+                this.board[row][x] = null;
+            }
+        }
+        
+        console.log(`✅ Fila ${row} de la sección de color azul eliminada`);
+    }
+    
+    clearGreenColorSectionRow(row) {
+        console.log(`🧹 Eliminando la fila ${row} de la sección de color verde`);
+        
+        for (let x = 8; x < 12; x++) {
+            const cube = this.board[row][x];
+            if (cube) {
+                this.flashingCubes.delete(cube);
+                this.scene.remove(cube);
+                this.board[row][x] = null;
+            }
+        }
+        
+        console.log(`✅ Fila ${row} de la sección de color verde eliminada`);
+    }
+    
     clearEntireRow(row) {
         console.log(`🧹 Eliminando TODA la fila ${row}`);
         
@@ -396,6 +463,54 @@ export class TetrisGame {
         console.log(`✅ Fila ${row} completamente eliminada`);
     }
     
+    moveRedColorSectionRowsDown(clearedRow) {
+        for (let y = clearedRow; y > 0; y--) {
+            for (let x = 0; x < 4; x++) {
+                this.board[y][x] = this.board[y - 1][x];
+                
+                if (this.board[y][x]) {
+                    this.board[y][x].position.y = this.calculateWorldY(y);
+                }
+            }
+        }
+        
+        for (let x = 0; x < 4; x++) {
+            this.board[0][x] = null;
+        }
+    }
+
+    moveBlueColorSectionRowsDown(clearedRow) {
+        for (let y = clearedRow; y > 0; y--) {
+            for (let x = 4; x < 8; x++) {
+                this.board[y][x] = this.board[y - 1][x];
+                
+                if (this.board[y][x]) {
+                    this.board[y][x].position.y = this.calculateWorldY(y);
+                }
+            }
+        }
+        
+        for (let x = 4; x < 8; x++) {
+            this.board[0][x] = null;
+        }
+    }
+
+    moveGreenColorSectionRowsDown(clearedRow) {
+        for (let y = clearedRow; y > 0; y--) {
+            for (let x = 8; x < 12; x++) {
+                this.board[y][x] = this.board[y - 1][x];
+                
+                if (this.board[y][x]) {
+                    this.board[y][x].position.y = this.calculateWorldY(y);
+                }
+            }
+        }
+        
+        for (let x = 8; x < 12; x++) {
+            this.board[0][x] = null;
+        }
+    }
+
     moveRowsDown(clearedRow) {
         for (let y = clearedRow; y > 0; y--) {
             for (let x = 0; x < this.boardWidth; x++) {
