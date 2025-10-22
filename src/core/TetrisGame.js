@@ -645,10 +645,13 @@ export class TetrisGame {
         for (let y = 0; y < this.boardHeight; y++) {
             for (let x = 0; x < this.boardWidth; x++) {
                 const cube = this.board[y][x];
-                if (cube && cube.userData.originalColor !== undefined) {
-                    const originalColor = cube.userData.originalColor;
-                    cube.userData.color = originalColor;
-                    this.applyColorToMesh(cube, originalColor);
+                if (cube && cube.userData.color !== undefined) {
+                    const color = cube.userData.color;
+                    // Si el cubo es gris, se le asigna el color de la zona
+                    if(color === this.GRAY_COLOR) {
+                        cube.userData.color = this.getZoneColor(x);
+                    }
+                    this.applyColorToMesh(cube, cube.userData.color);
                 }
             }
         }
