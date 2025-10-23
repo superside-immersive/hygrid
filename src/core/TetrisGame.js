@@ -294,47 +294,47 @@ export class TetrisGame {
         let linesCleared = 0;
         
         for (let y = this.boardHeight - 1; y >= 0; y--) {
-            if (this.isYellowMode) {
-                if (this.isRowCompletelyFull(y) && this.rowHasYellowBlocks(y)) {
-                    console.log(`🟡 Línea amarilla completa en fila ${y}`);
+            // if (this.isYellowMode) {
+            //     if (this.isRowCompletelyFull(y) && this.rowHasYellowBlocks(y)) {
+            //         console.log(`🟡 Línea amarilla completa en fila ${y}`);
                     
-                    this.clearEntireRow(y);
-                    this.moveRowsDown(y);
-                    linesCleared++;
-                    this.lines++;
-                    y++;
+            //         this.clearEntireRow(y);
+            //         this.moveRowsDown(y);
+            //         linesCleared++;
+            //         this.lines++;
+            //         y++;
                     
-                    if (typeof window.playLineClearSFX === 'function') {
-                        window.playLineClearSFX();
-                    }
-                }
-            } else {
-                const completedSections = this.checkAllColorSections(y);
+            //         if (typeof window.playLineClearSFX === 'function') {
+            //             window.playLineClearSFX();
+            //         }
+            //     }
+            // } else {
+            const completedSections = this.checkAllColorSections(y);
+            
+            if (completedSections > 0) {
+                console.log(`🔥 ${completedSections} secciones completadas en fila ${y}`);
                 
-                if (completedSections > 0) {
-                    console.log(`🔥 ${completedSections} secciones completadas en fila ${y}`);
-                    
-                    if (this.checkRedColorSection(y)) {
-                        this.clearRedColorSectionRow(y);
-                        this.moveRedColorSectionRowsDown(y);
-                    }
-                    if (this.checkBlueColorSection(y)) {
-                        this.clearBlueColorSectionRow(y);
-                        this.moveBlueColorSectionRowsDown(y);
-                    }
-                    if (this.checkGreenColorSection(y)) {
-                        this.clearGreenColorSectionRow(y);
-                        this.moveGreenColorSectionRowsDown(y);
-                    }
-                    linesCleared++;
-                    this.lines++;
-                    y++;
-                    
-                    if (typeof window.playLineClearSFX === 'function') {
-                        window.playLineClearSFX();
-                    }
+                if (this.checkRedColorSection(y)) {
+                    this.clearRedColorSectionRow(y);
+                    this.moveRedColorSectionRowsDown(y);
+                }
+                if (this.checkBlueColorSection(y)) {
+                    this.clearBlueColorSectionRow(y);
+                    this.moveBlueColorSectionRowsDown(y);
+                }
+                if (this.checkGreenColorSection(y)) {
+                    this.clearGreenColorSectionRow(y);
+                    this.moveGreenColorSectionRowsDown(y);
+                }
+                linesCleared++;
+                this.lines++;
+                y++;
+                
+                if (typeof window.playLineClearSFX === 'function') {
+                    window.playLineClearSFX();
                 }
             }
+            // }
         }
         
         if (linesCleared > 0) {
@@ -394,7 +394,7 @@ export class TetrisGame {
             const cube = this.board[row][x];
             if (!cube) return false;
             
-            const cubeColor = cube.userData.originalColor || cube.userData.color || this.getCubeColor(cube);
+            const cubeColor = cube.userData.color || cube.userData.originalColor || this.getCubeColor(cube);
             if (cubeColor !== expectedColor) {
                 return false;
             }
@@ -580,6 +580,7 @@ export class TetrisGame {
         }
         
         this.convertAllBlocksToYellow();
+        this.checkLines();
         
         console.log('🟡 Modo amarillo activado!');
     }
@@ -611,6 +612,11 @@ export class TetrisGame {
                 if (cube) {
                     if (!cube.userData.originalColor) {
                         cube.userData.originalColor = cube.userData.color || this.getCubeColor(cube);
+                    }
+                    const color = cube.userData.color;
+                    // Si el cubo es gris, se le asigna el color de la zona
+                    if(color === this.GRAY_COLOR) {
+                        cube.userData.color = this.getZoneColor(x);
                     }
                     if (cube instanceof THREE.Group) {
                         cube.children.forEach(child => {
@@ -646,11 +652,6 @@ export class TetrisGame {
             for (let x = 0; x < this.boardWidth; x++) {
                 const cube = this.board[y][x];
                 if (cube && cube.userData.color !== undefined) {
-                    const color = cube.userData.color;
-                    // Si el cubo es gris, se le asigna el color de la zona
-                    if(color === this.GRAY_COLOR) {
-                        cube.userData.color = this.getZoneColor(x);
-                    }
                     this.applyColorToMesh(cube, cube.userData.color);
                 }
             }
