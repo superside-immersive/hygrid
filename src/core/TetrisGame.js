@@ -620,9 +620,15 @@ export class TetrisGame {
                     }
                     if (cube instanceof THREE.Group) {
                         cube.children.forEach(child => {
-                            if (child.material && !child.userData.isInnerCube) {
-                                child.material.color.setHex(this.YELLOW_COLOR_HEX);
-                                child.material.opacity = 0.95;
+                            if (child.material) {
+                                if(child.userData.isInnerCube) {
+                                    child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
+                                    child.material.emissiveIntensity = 5.0;
+                                }
+                                else{
+                                    child.material.color.setHex(this.YELLOW_COLOR_HEX);
+                                    child.material.opacity = 0.95;
+                                }
                             }
                         });
                     }
@@ -637,9 +643,15 @@ export class TetrisGame {
                 }
                 if (cube instanceof THREE.Group) {
                     cube.children.forEach(child => {
-                        if (child.material && !child.userData.isInnerCube) {
-                            child.material.color.setHex(this.YELLOW_COLOR_HEX);
-                            child.material.opacity = 0.95;
+                        if (child.material) {
+                            if(child.userData.isInnerCube) {
+                                child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
+                                child.material.emissiveIntensity = 5.0;
+                            }
+                            else{
+                                child.material.color.setHex(this.YELLOW_COLOR_HEX);
+                                child.material.opacity = 0.95;
+                            }
                         }
                     });
                 }
@@ -764,10 +776,20 @@ export class TetrisGame {
         );
         cubeTexture.colorSpace = THREE.SRGBColorSpace;
         
-        const innerMaterial = new THREE.MeshBasicMaterial({ 
+        const emissionTexture = textureLoader.load(
+            new URL('../../assets/images/cube_emission.jpg', import.meta.url).href
+        );
+        emissionTexture.colorSpace = THREE.SRGBColorSpace;
+        
+        const innerMaterial = new THREE.MeshStandardMaterial({ 
             map: cubeTexture,
+            emissiveMap: emissionTexture,
+            emissive: new THREE.Color(0xffffff),
+            emissiveIntensity: 5.0,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.8,
+            roughness: 0.3,
+            metalness: 0.1
         });
         
         const innerCube = new THREE.Mesh(innerGeometry, innerMaterial);
@@ -934,9 +956,15 @@ export class TetrisGame {
                 cube.userData.color = blockColor;
                 if (cube instanceof THREE.Group) {
                     cube.children.forEach(child => {
-                        if (child.material && !child.userData.isInnerCube) {
-                            child.material.color.setHex(this.YELLOW_COLOR_HEX);
-                            child.material.opacity = 0.95;
+                        if (child.material) {
+                            if(child.userData.isInnerCube) {
+                                child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
+                                child.material.emissiveIntensity = 5.0;
+                            }
+                            else{
+                                child.material.color.setHex(this.YELLOW_COLOR_HEX);
+                                child.material.opacity = 0.95;
+                            }
                         }
                     });
                 }
@@ -1063,9 +1091,15 @@ export class TetrisGame {
                     if (this.isYellowMode) {
                         if (cube instanceof THREE.Group) {
                             cube.children.forEach(child => {
-                                if (child.material && !child.userData.isInnerCube) {
-                                    child.material.color.setHex(this.YELLOW_COLOR_HEX);
-                                    child.material.opacity = 0.95;
+                                if (child.material) {
+                                    if(child.userData.isInnerCube) {
+                                        child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
+                                        child.material.emissiveIntensity = 5.0;
+                                    }
+                                    else{
+                                        child.material.color.setHex(this.YELLOW_COLOR_HEX);
+                                        child.material.opacity = 0.95;
+                                    }
                                 }
                             });
                         }
@@ -1077,12 +1111,12 @@ export class TetrisGame {
             } else {
                 const progress = elapsed / this.flashDuration;
                 const flashCycle = Math.sin(progress * Math.PI * 8);
-                const intensity = flashData.isError ? 0.1 : 0.8;
+                const opacity = flashData.isError ? 0.1 : 0.8;
                 
                 if (flashCycle > 0) {
-                    this.setMeshEmissiveIntensity(cube, intensity);
+                    this.setMeshOpacity(cube, opacity);
                 } else {
-                    this.setMeshEmissiveIntensity(cube, 0.4);
+                    this.setMeshOpacity(cube, 0.4);
                 }
             }
         });
@@ -1108,20 +1142,26 @@ export class TetrisGame {
         if (cube instanceof THREE.Group) {
             const newColor = this.getColorByNumber(color);
             cube.children.forEach(child => {
-                if (child.material && !child.userData.isInnerCube) {
-                    child.material.color.setHex(newColor);
+                if (child.material) {
+                    if(child.userData.isInnerCube) {
+                        child.material.emissive = new THREE.Color(newColor);
+                        child.material.emissiveIntensity = 5.0;
+                    }
+                    else{
+                        child.material.color.setHex(newColor);    
+                    }
                 }
             });
         }
         cube.userData.color = color;
     }
     
-    setMeshEmissiveIntensity(cube, intensity) {
+    setMeshOpacity(cube, opacity) {
         if (cube instanceof THREE.Group) {
             cube.children.forEach(child => {
                 if (child.material) {
                     if (!child.userData.isInnerCube) {
-                        child.material.opacity = Math.max(0.5, intensity);
+                        child.material.opacity = Math.max(0.5, opacity);
                     } else {
                         child.material.opacity = 0.8;
                     }
