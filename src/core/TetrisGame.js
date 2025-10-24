@@ -46,7 +46,7 @@ export class TetrisGame {
         this.isYellowMode = false;
         this.yellowModeStartTime = 0;
         this.YELLOW_MODE_DURATION = 10;
-        this.YELLOW_MODE_THRESHOLD = 5000;
+        this.YELLOW_MODE_THRESHOLD = 7500;
         
         // Flash effects
         this.flashingCubes = new Map();
