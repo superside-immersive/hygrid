@@ -928,10 +928,26 @@ export class TetrisGame {
     }
     
     renderCurrentPiece() {
+        const coords = this.getCurrentPieceCoords();
+        
+        // If we have the right number of cubes, just update their positions
+        if (this.currentPieceCubes.length === coords.length) {
+            coords.forEach((coord, index) => {
+                const cube = this.currentPieceCubes[index];
+                if (cube) {
+                    cube.position.set(
+                        this.calculateWorldX(coord.x + this.pieceX),
+                        this.calculateWorldY(coord.y + this.pieceY),
+                        0
+                    );
+                }
+            });
+            return;
+        }
+        
+        // Otherwise, we need to recreate cubes (rotation changed cube count or first spawn)
         this.currentPieceCubes.forEach(cube => this.scene.remove(cube));
         this.currentPieceCubes = [];
-        
-        const coords = this.getCurrentPieceCoords();
         
         coords.forEach((coord, index) => {
             let blockColor = this.currentColor;
