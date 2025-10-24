@@ -38,7 +38,7 @@ export class TetrisGame {
         this.isGameOver = false;
         this.level = 1;
         this.LEVEL_THRESHOLD = 10000;
-        this.BASE_TICK_CYCLE = 25;
+        this.BASE_TICK_CYCLE = 35;
         this.SPEED_INCREASE_PER_LEVEL = 0.15;
         
         // Yellow mode (bonus)
