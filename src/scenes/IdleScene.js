@@ -39,20 +39,10 @@ export class IdleScene {
         );
         cubeTexture.colorSpace = THREE.SRGBColorSpace;
 
-        const emissionTexture = textureLoader.load(
-            new URL('../../assets/images/cube_emission_high.jpg', import.meta.url).href
-        );
-        emissionTexture.colorSpace = THREE.SRGBColorSpace;
-        
-        const innerMaterial = new THREE.MeshStandardMaterial({ 
+        const innerMaterial = new THREE.MeshBasicMaterial({ 
             map: cubeTexture,
-            emissiveMap: emissionTexture,
-            emissive: new THREE.Color(0xdcee2d),
-            emissiveIntensity: 5.0,
             transparent: true,
             opacity: 1.0, // Opacidad completa para textura más brillante
-            roughness: 0.3,
-            metalness: 0.1
         });
         
         const innerCube = new THREE.Mesh(innerGeometry, innerMaterial);

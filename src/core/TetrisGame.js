@@ -621,11 +621,7 @@ export class TetrisGame {
                     if (cube instanceof THREE.Group) {
                         cube.children.forEach(child => {
                             if (child.material) {
-                                if(child.userData.isInnerCube) {
-                                    child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
-                                    child.material.emissiveIntensity = 5.0;
-                                }
-                                else{
+                                if(!child.userData.isInnerCube) {
                                     child.material.color.setHex(this.YELLOW_COLOR_HEX);
                                     child.material.opacity = 0.95;
                                 }
@@ -644,11 +640,7 @@ export class TetrisGame {
                 if (cube instanceof THREE.Group) {
                     cube.children.forEach(child => {
                         if (child.material) {
-                            if(child.userData.isInnerCube) {
-                                child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
-                                child.material.emissiveIntensity = 5.0;
-                            }
-                            else{
+                            if(!child.userData.isInnerCube) {
                                 child.material.color.setHex(this.YELLOW_COLOR_HEX);
                                 child.material.opacity = 0.95;
                             }
@@ -776,20 +768,11 @@ export class TetrisGame {
         );
         cubeTexture.colorSpace = THREE.SRGBColorSpace;
         
-        const emissionTexture = textureLoader.load(
-            new URL('../../assets/images/cube_emission.jpg', import.meta.url).href
-        );
-        emissionTexture.colorSpace = THREE.SRGBColorSpace;
-        
-        const innerMaterial = new THREE.MeshStandardMaterial({ 
+        const innerMaterial = new THREE.MeshBasicMaterial({ 
             map: cubeTexture,
-            emissiveMap: emissionTexture,
-            emissive: new THREE.Color(0xffffff),
-            emissiveIntensity: 5.0,
             transparent: true,
             opacity: 0.8,
-            roughness: 0.3,
-            metalness: 0.1
+
         });
         
         const innerCube = new THREE.Mesh(innerGeometry, innerMaterial);
@@ -973,11 +956,7 @@ export class TetrisGame {
                 if (cube instanceof THREE.Group) {
                     cube.children.forEach(child => {
                         if (child.material) {
-                            if(child.userData.isInnerCube) {
-                                child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
-                                child.material.emissiveIntensity = 5.0;
-                            }
-                            else{
+                            if(!child.userData.isInnerCube) {
                                 child.material.color.setHex(this.YELLOW_COLOR_HEX);
                                 child.material.opacity = 0.95;
                             }
@@ -1108,11 +1087,7 @@ export class TetrisGame {
                         if (cube instanceof THREE.Group) {
                             cube.children.forEach(child => {
                                 if (child.material) {
-                                    if(child.userData.isInnerCube) {
-                                        child.material.emissive = new THREE.Color(this.YELLOW_COLOR_HEX);
-                                        child.material.emissiveIntensity = 5.0;
-                                    }
-                                    else{
+                                    if(!child.userData.isInnerCube){
                                         child.material.color.setHex(this.YELLOW_COLOR_HEX);
                                         child.material.opacity = 0.95;
                                     }
@@ -1159,12 +1134,9 @@ export class TetrisGame {
             const newColor = this.getColorByNumber(color);
             cube.children.forEach(child => {
                 if (child.material) {
-                    if(child.userData.isInnerCube) {
-                        child.material.emissive = new THREE.Color(newColor);
-                        child.material.emissiveIntensity = 5.0;
-                    }
-                    else{
-                        child.material.color.setHex(newColor);    
+                    if(!child.userData.isInnerCube){
+                        child.material.color.setHex(newColor);  
+                        child.material.opacity = 0.8;
                     }
                 }
             });
