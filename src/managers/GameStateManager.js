@@ -18,6 +18,7 @@ export class GameStateManager {
         this.nameInputLetters = ['A', 'A', 'A'];
         this.nameInputPosition = 0;
         this._nameInputKeyHandler = null;
+        this.forceScoreboard = false;
         
         this.initializeDOMElements();
         this.loadScoreHistory();
@@ -79,13 +80,22 @@ export class GameStateManager {
     }
     
     updateIdle(deltaTime) {
+        // If we just came from a game, keep the scoreboard visible and suppress idle title
+        if (this.forceScoreboard) {
+            if (!this.isShowingScoreboard) {
+                this.showScoreboard();
+            }
+            this.forceScoreboard = false;
+            return;
+        }
+
         this.scoreboardTimer += deltaTime;
-        
+
         if (!this.isShowingScoreboard && this.scoreboardTimer >= this.scoreboardShowInterval) {
             this.showScoreboard();
             this.scoreboardTimer = 0;
         }
-        
+
         if (this.isShowingScoreboard && this.scoreboardTimer >= this.scoreboardDisplayDuration) {
             this.hideScoreboard();
             this.scoreboardTimer = 0;
@@ -123,9 +133,17 @@ export class GameStateManager {
         
         switch (newState) {
             case 'idle':
+                // If we just saved a score, show the scoreboard immediately without idle title
+                if (this.forceScoreboard) {
+                    this.showScoreboard();
+                    this.isShowingScoreboard = true;
+                    this.scoreboardTimer = 0;
+                }
                 this.showIdleScreen();
                 break;
             case 'intro':
+                // Reset forced scoreboard once a new round is starting
+                this.forceScoreboard = false;
                 this.showIntroScreen();
                 break;
             case 'playing':
@@ -282,8 +300,7 @@ export class GameStateManager {
         // Hide name input and show scoreboard immediately with highlight
         if (this.nameInputScreen) this.nameInputScreen.style.display = 'none';
         this.detachNameInputListeners();
-        this.showScoreboard();
-        // Transition to idle so normal loop resumes with scoreboard visible
+        this.forceScoreboard = true;
         this.changeState('idle');
     }
     
