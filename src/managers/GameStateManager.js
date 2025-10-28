@@ -13,7 +13,7 @@ export class GameStateManager {
         this.gameOverDisplayDuration = 5;
         
         this.scoreHistory = [];
-        this.MAX_SCORE_HISTORY = 10;
+        this.MAX_SCORE_HISTORY = 50;
         this.recentSavedTimestamp = null;
         this.nameInputLetters = ['A', 'A', 'A'];
         this.nameInputPosition = 0;
@@ -404,11 +404,40 @@ export class GameStateManager {
         if (!this.scoreboardScreen) return;
         const listElement = this.scoreboardScreen.querySelector('.scoreboard-list');
         if (!listElement) return;
-        
+
         listElement.innerHTML = '';
         const sorted = [...this.scoreHistory].sort((a, b) => b.score - a.score);
-        
-        sorted.forEach((entry, index) => {
+
+        if (sorted.length === 0) {
+            const emptyMessage = document.createElement('div');
+            emptyMessage.className = 'scoreboard-empty';
+            emptyMessage.textContent = 'No scores yet. Play to set a record!';
+            listElement.appendChild(emptyMessage);
+            return;
+        }
+
+        const maxRows = 10;
+        const recentIdx = this.recentSavedTimestamp
+            ? sorted.findIndex(e => e.timestamp === this.recentSavedTimestamp)
+            : -1;
+
+        // Build the list of entries to display (max 10)
+        let displayEntries = [];
+        if (sorted.length <= maxRows) {
+            displayEntries = sorted.map((entry, index) => ({ entry, rank: index + 1 }));
+        } else {
+            // Start with top 10
+            const topTen = sorted.slice(0, maxRows).map((entry, index) => ({ entry, rank: index + 1 }));
+            if (recentIdx >= maxRows) {
+                // Replace last row with the recent score but keep its true rank
+                const recentEntry = { entry: sorted[recentIdx], rank: recentIdx + 1 };
+                displayEntries = topTen.slice(0, maxRows - 1).concat(recentEntry);
+            } else {
+                displayEntries = topTen;
+            }
+        }
+
+        displayEntries.forEach(({ entry, rank }) => {
             const item = document.createElement('div');
             item.className = 'scoreboard-item';
             if (this.recentSavedTimestamp && entry.timestamp === this.recentSavedTimestamp) {
@@ -416,19 +445,12 @@ export class GameStateManager {
             }
             const name = (entry.name || 'AAA').substring(0, 3).toUpperCase();
             item.innerHTML = `
-                <span class="rank">${(index + 1).toString().padStart(2, '0')}</span>
+                <span class="rank">${rank.toString().padStart(2, '0')}</span>
                 <span class="name">${name}</span>
                 <span class="score">${entry.score.toString().padStart(7, '0')}</span>
                 <span class="lines">${entry.lines.toString().padStart(3, '0')} LINES</span>
             `;
             listElement.appendChild(item);
         });
-        
-        if (sorted.length === 0) {
-            const emptyMessage = document.createElement('div');
-            emptyMessage.className = 'scoreboard-empty';
-            emptyMessage.textContent = 'No scores yet. Play to set a record!';
-            listElement.appendChild(emptyMessage);
-        }
     }
 }

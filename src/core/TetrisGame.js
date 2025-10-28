@@ -39,7 +39,7 @@ export class TetrisGame {
         this.level = 1;
         this.LEVEL_THRESHOLD = 10000;
         this.BASE_TICK_CYCLE = 35;
-        this.SPEED_INCREASE_PER_LEVEL = 0.15;
+        this.SPEED_INCREASE_PER_LEVEL = 0.2;
         
         // Yellow mode (bonus)
         this.lastYellowModeScore = 0;
@@ -554,7 +554,7 @@ export class TetrisGame {
                 window.showLevelUpOverlay(this.level);
             }
             if (typeof window.setMusicTempo === 'function') {
-                const tempo = 1.0 + (this.level - 1) * 0.1;
+                const tempo = 1.0 + (this.level - 1) * 0.075;
                 window.setMusicTempo(tempo);
             }
         }
@@ -1036,6 +1036,7 @@ export class TetrisGame {
         this.spawnPiece();
         
         if (typeof window.startMusic === 'function') {
+            window.setMusicTempo(1.0);
             window.startMusic();
         }
         
