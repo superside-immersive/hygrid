@@ -257,3 +257,94 @@
   animation: scaleIn 0.4s ease-out;
   filter: drop-shadow(0 0 30px rgba(220, 238, 45, 0.6));
 }
+
+/* === NAME INPUT SCREEN === */
+#name-input-screen .name-input-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 70px;
+  color: #dcee2d;
+  letter-spacing: -0.77px;
+  margin-bottom: 4rem;
+  line-height: 1.5;
+}
+
+.name-input-container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.letter-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.letter-selector.active .letter-value {
+  color: #dcee2d;
+  border-color: #dcee2d;
+  background: rgba(220, 238, 45, 0.1);
+}
+
+.letter-value {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 120px;
+  color: #656565;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #656565;
+  background: rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+}
+
+.letter-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0.5;
+}
+
+.letter-selector.active .letter-arrows {
+  opacity: 1;
+}
+
+.arrow-up, .arrow-down {
+  font-size: 40px;
+  color: #dcee2d;
+}
+
+#name-input-screen .name-input-hint {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 200;
+  font-size: 32px;
+  color: #656565;
+  margin-top: 2rem;
+}
+
+/* === SCOREBOARD NAME + HIGHLIGHT === */
+.scoreboard-item .name {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 50px;
+  color: #dcee2d;
+  min-width: 150px;
+  text-align: left;
+}
+
+.scoreboard-item.highlighted {
+  background: rgba(220, 238, 45, 0.25);
+  animation: highlightPulse 1.5s ease-in-out 3;
+}
+
+@keyframes highlightPulse {
+  0%, 100% { background: rgba(220, 238, 45, 0.25); }
+  50% { background: rgba(220, 238, 45, 0.4); }
+}

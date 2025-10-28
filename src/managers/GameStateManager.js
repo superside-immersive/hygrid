@@ -14,6 +14,10 @@ export class GameStateManager {
         
         this.scoreHistory = [];
         this.MAX_SCORE_HISTORY = 10;
+        this.recentSavedTimestamp = null;
+        this.nameInputLetters = ['A', 'A', 'A'];
+        this.nameInputPosition = 0;
+        this._nameInputKeyHandler = null;
         
         this.initializeDOMElements();
         this.loadScoreHistory();
@@ -28,6 +32,7 @@ export class GameStateManager {
         this.scoreboardScreen = document.getElementById('scoreboard-screen');
         this.gameHeader = document.getElementById('game-header');
         this.gameFooter = document.getElementById('game-footer');
+        this.nameInputScreen = document.getElementById('name-input-screen');
     }
     
     setupEventListeners() {
@@ -67,6 +72,9 @@ export class GameStateManager {
             case 'gameover':
                 this.updateGameOver();
                 break;
+            case 'name-input':
+                this.updateNameInput();
+                break;
         }
     }
     
@@ -99,8 +107,12 @@ export class GameStateManager {
     
     updateGameOver() {
         if (this.stateTimer >= this.gameOverDisplayDuration) {
-            this.changeState('idle');
+            this.changeState('name-input');
         }
+    }
+
+    updateNameInput() {
+        // No-op: input handled via keydown listeners while in this state
     }
     
     changeState(newState) {
@@ -123,6 +135,9 @@ export class GameStateManager {
             case 'gameover':
                 this.showGameOverScreen();
                 break;
+            case 'name-input':
+                this.showNameInputScreen();
+                break;
         }
     }
     
@@ -131,6 +146,7 @@ export class GameStateManager {
         if (this.introScreen) this.introScreen.style.display = 'none';
         if (this.gameOverScreen) this.gameOverScreen.style.display = 'none';
         if (this.scoreboardScreen) this.scoreboardScreen.style.display = 'none';
+        if (this.nameInputScreen) this.nameInputScreen.style.display = 'none';
     }
     
     showGameUI() {
@@ -177,6 +193,98 @@ export class GameStateManager {
             if (scoreValue) scoreValue.textContent = window.tetrisGame.score.toString().padStart(4, '0');
             if (linesValue) linesValue.textContent = window.tetrisGame.lines.toString().padStart(3, '0');
         }
+    }
+
+    showNameInputScreen() {
+        this.hideGameUI();
+        if (!this.nameInputScreen) return;
+        this.nameInputScreen.style.display = 'flex';
+
+        // Reset name input state
+        this.nameInputLetters = ['A', 'A', 'A'];
+        this.nameInputPosition = 0;
+        this.renderNameInputUI();
+        this.attachNameInputListeners();
+    }
+
+    renderNameInputUI() {
+        if (!this.nameInputScreen) return;
+        const selectors = this.nameInputScreen.querySelectorAll('.letter-selector');
+        selectors.forEach((selector, index) => {
+            const val = selector.querySelector('.letter-value');
+            if (val) val.textContent = this.nameInputLetters[index];
+            if (index === this.nameInputPosition) selector.classList.add('active');
+            else selector.classList.remove('active');
+        });
+    }
+
+    attachNameInputListeners() {
+        this.detachNameInputListeners();
+        this._nameInputKeyHandler = (e) => {
+            if (this.currentState !== 'name-input') return;
+            const key = e.key;
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const pos = this.nameInputPosition;
+            const current = this.nameInputLetters[pos];
+            const idx = letters.indexOf(current);
+            switch (key) {
+                case 'ArrowDown': {
+                    const nextIdx = (idx + 1) % letters.length;
+                    this.nameInputLetters[pos] = letters[nextIdx];
+                    this.renderNameInputUI();
+                    break;
+                }
+                case 'ArrowUp': {
+                    const nextIdx = (idx - 1 + letters.length) % letters.length;
+                    this.nameInputLetters[pos] = letters[nextIdx];
+                    this.renderNameInputUI();
+                    break;
+                }
+                case 'ArrowRight': {
+                    if (pos < 2) {
+                        this.nameInputPosition = pos + 1;
+                        this.renderNameInputUI();
+                    } else {
+                        this.submitNameInput();
+                    }
+                    break;
+                }
+                case 'ArrowLeft': {
+                    if (pos > 0) {
+                        this.nameInputPosition = pos - 1;
+                        this.renderNameInputUI();
+                    } else {
+                        // If at first letter, treat as confirm as well
+                        this.submitNameInput();
+                    }
+                    break;
+                }
+            }
+        };
+        document.addEventListener('keydown', this._nameInputKeyHandler);
+    }
+
+    detachNameInputListeners() {
+        if (this._nameInputKeyHandler) {
+            document.removeEventListener('keydown', this._nameInputKeyHandler);
+            this._nameInputKeyHandler = null;
+        }
+    }
+
+    submitNameInput() {
+        const name = this.nameInputLetters.join('');
+        if (window.tetrisGame) {
+            const score = window.tetrisGame.score;
+            const lines = window.tetrisGame.lines;
+            const ts = this.saveScore(score, lines, name);
+            this.recentSavedTimestamp = ts;
+        }
+        // Hide name input and show scoreboard immediately with highlight
+        if (this.nameInputScreen) this.nameInputScreen.style.display = 'none';
+        this.detachNameInputListeners();
+        this.showScoreboard();
+        // Transition to idle so normal loop resumes with scoreboard visible
+        this.changeState('idle');
     }
     
     showScoreboard() {
@@ -226,9 +334,6 @@ export class GameStateManager {
     }
     
     onGameOver() {
-        if (window.tetrisGame) {
-            this.saveScore(window.tetrisGame.score, window.tetrisGame.lines);
-        }
         this.changeState('gameover');
     }
     
@@ -250,13 +355,15 @@ export class GameStateManager {
         }
     }
     
-    saveScore(score, lines) {
-        const newScore = { score, lines, timestamp: Date.now() };
+    saveScore(score, lines, name = 'AAA') {
+        const ts = Date.now();
+        const newScore = { score, lines, name, timestamp: ts };
         this.scoreHistory.unshift(newScore);
         if (this.scoreHistory.length > this.MAX_SCORE_HISTORY) {
             this.scoreHistory = this.scoreHistory.slice(0, this.MAX_SCORE_HISTORY);
         }
         this.saveScoreHistory();
+        return ts;
     }
     
     loadScoreHistory() {
@@ -287,8 +394,13 @@ export class GameStateManager {
         sorted.forEach((entry, index) => {
             const item = document.createElement('div');
             item.className = 'scoreboard-item';
+            if (this.recentSavedTimestamp && entry.timestamp === this.recentSavedTimestamp) {
+                item.classList.add('highlighted');
+            }
+            const name = (entry.name || 'AAA').substring(0, 3).toUpperCase();
             item.innerHTML = `
                 <span class="rank">${(index + 1).toString().padStart(2, '0')}</span>
+                <span class="name">${name}</span>
                 <span class="score">${entry.score.toString().padStart(7, '0')}</span>
                 <span class="lines">${entry.lines.toString().padStart(3, '0')} LINES</span>
             `;
