@@ -78,29 +78,29 @@ export class TetrisGame {
     definePieces() {
         return [
             // Piezas de 2 bloques (rojas)
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 1 },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 1 },
             // Piezas de 2 bloques (azules)
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 2 },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 2 },
             // Piezas de 2 bloques (verdes)
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 3 },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 3 },
             // Piezas de 3 bloques (rojas)
-            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 1 },
+            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}, {x: -1, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}, {x: 0, y: -1}]], rotationState: 0, color: 1 },
             // Piezas de 3 bloques (azules)
-            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 2 },
+            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}, {x: -1, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}, {x: 0, y: -1}]], rotationState: 0, color: 2 },
             // Piezas de 3 bloques (verdes)
-            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 3 },
+            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}, {x: -1, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}, {x: 0, y: -1}]], rotationState: 0, color: 3 },
             // Piezas de 4 bloques cuadradas (rojas)
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}]], rotationState: 0, color: 1 },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 1, y: 1}], [{x: 1, y: 1}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 0, y: 0}], [{x: 1, y: 1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 1 },
             // Piezas de 4 bloques cuadradas (azules)
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}]], rotationState: 0, color: 2 },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 1, y: 1}], [{x: 1, y: 1}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 0, y: 0}], [{x: 1, y: 1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 2 },
             // Piezas de 4 bloques cuadradas (verdes)
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}]], rotationState: 0, color: 3 },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}], [{x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 1, y: 1}], [{x: 1, y: 1}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 0, y: 0}], [{x: 1, y: 1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 3 },
             // Piezas multicolor de 2 bloques
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 1, blockColors: [[1, 2], [1, 2], [2, 1], [2, 1]] },
-            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 2, blockColors: [[2, 3], [2, 3], [3, 2], [3, 2]] },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 1, blockColors: [[1, 2], [1, 2], [1, 2], [1, 2]] },
+            { rotations: [[{x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}]], rotationState: 0, color: 2, blockColors: [[2, 3], [2, 3], [2, 3], [2, 3]] },
             // Piezas multicolor de 3 bloques
-            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 1, blockColors: [[1, 1, 2], [1, 1, 2], [2, 1, 1], [2, 1, 1]] },
-            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}]], rotationState: 0, color: 2, blockColors: [[2, 2, 3], [2, 2, 3], [3, 2, 2], [3, 2, 2]] }
+            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}, {x: -1, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}, {x: 0, y: -1}]], rotationState: 0, color: 1, blockColors: [[1, 1, 2], [1, 1, 2], [1, 1, 2], [1, 1, 2]] },
+            { rotations: [[{x: -1, y: 0}, {x: 0, y: 0}, {x: 1, y: 0}], [{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}], [{x: 1, y: 0}, {x: 0, y: 0}, {x: -1, y: 0}], [{x: 0, y: 1}, {x: 0, y: 0}, {x: 0, y: -1}]], rotationState: 0, color: 2, blockColors: [[2, 2, 3], [2, 2, 3], [2, 2, 3], [2, 2, 3]] }
         ];
     }
     
