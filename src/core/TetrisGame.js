@@ -1066,7 +1066,7 @@ export class TetrisGame {
         const speed = Math.min(4, 1 + (this.level - 1) * this.SPEED_INCREASE_PER_LEVEL);
         const tickCycle = Math.max(5, this.BASE_TICK_CYCLE / speed);
         
-        //this.ticks++;
+        this.ticks++;
         if (this.ticks >= tickCycle) {
             this.ticks = 0;
             this.movePiece();

@@ -1,3 +1,4 @@
+import { splitPaddedNumber } from '../utils/formatting.js';
 // ==================== GAME STATE MANAGER ====================
 export class GameStateManager {
     constructor(idleScene) {
@@ -356,19 +357,25 @@ export class GameStateManager {
     
     updateGameUI() {
         if (!this.gameFooter || !window.tetrisGame) return;
-        const scoreElement = document.getElementById('current-score');
+        const scoreElement = document.getElementById('score-value');
         if (scoreElement) {
-            const scoreStr = window.tetrisGame.score.toString().padStart(7, '0');
-            // Últimos 4 dígitos en amarillo, primeros 3 en gris
-            const grayPart = scoreStr.slice(0, 3);
-            const yellowPart = scoreStr.slice(3);
+            const { grayPart, yellowPart } = splitPaddedNumber(window.tetrisGame.score, 6);
             scoreElement.innerHTML = `<span class="score-gray">${grayPart}</span><span class="score-yellow">${yellowPart}</span>`;
-            
-            if (typeof window.updateLogoFill === 'function') {
-                // Calcular el progreso hacia el próximo power-up (score desde el último power-up)
-                const progressScore = window.tetrisGame.score - window.tetrisGame.lastYellowModeScore;
-                window.updateLogoFill(progressScore, window.tetrisGame.YELLOW_MODE_THRESHOLD);
-            }
+        }
+        const linesElement = document.getElementById('lines-number-footer');
+        if (linesElement) {
+            const { grayPart, yellowPart } = splitPaddedNumber(window.tetrisGame.lines, 2);
+            linesElement.innerHTML = `<span class="score-gray">${grayPart}</span><span class="score-yellow">${yellowPart}</span>`;
+        }
+        const levelElement = document.getElementById('level-number-footer');
+        if (levelElement) {
+            const { grayPart, yellowPart } = splitPaddedNumber(window.tetrisGame.level, 2);
+            levelElement.innerHTML = `<span class="score-gray">${grayPart}</span><span class="score-yellow">${yellowPart}</span>`;
+        }
+        if (typeof window.updateLogoFill === 'function') {
+            // Calcular el progreso hacia el próximo power-up (score desde el último power-up)
+            const progressScore = window.tetrisGame.score - window.tetrisGame.lastYellowModeScore;
+            window.updateLogoFill(progressScore, window.tetrisGame.YELLOW_MODE_THRESHOLD);
         }
     }
     

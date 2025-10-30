@@ -96,9 +96,8 @@
 /* === BOTTOM FOOTER === */
 .game-footer {
   flex-shrink: 0;
-  background: #211f23;
+  background: #211F23;
   border: 2px solid #dcee2d;
-  border-top: 2px solid #dcee2d;
   height: 200px;
   z-index: 100;
   display: none;
@@ -121,18 +120,20 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-left: 88px;
+  padding-left: 30px;
+  height: 200px;
+  width: 450px;
   flex: 0 0 auto;
 }
 
 .score-label {
   font-family: 'DM Sans', sans-serif;
   font-weight: 300;
-  font-size: 50px;
-  color: #dcee2d;
+  font-size: 36px;
+  color: #ffffff;
   letter-spacing: -0.55px;
-  line-height: 1.5;
-  margin-bottom: -8px;
+  margin-top: 16px;
+  margin-bottom: -16px;
 }
 
 .score-value {
@@ -151,7 +152,62 @@
   color: #dcee2d;
 }
 
-/* Logo en el centro */
+/* Lines + Level section: vertically stacked, split 50/50, matching styles, yellow border, no background.
+   Label top-left, Number top-right (horizontally, full width), both aligned to yellow border container. */
+.lines-level-display-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  height: 200px;
+  width: 225px;
+  flex: 0 0 auto;
+}
+
+/* Shared style for both displays */
+.lines-display-footer,
+.level-display-footer {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border: 1px solid #dcee2d;
+  background: none;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 18px;
+  position: relative;
+  min-height: 0;
+}
+
+.lines-label-footer,
+.level-label-footer {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 30px;
+  color: #fff;
+  letter-spacing: -0.55px;
+  margin: 20px 0 0 0;
+  align-self: flex-start;
+  flex: 0 0 auto;
+}
+
+.lines-number-footer,
+.level-number-footer {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 72px;
+  color: #dcee2d;
+  letter-spacing: -1.1px;
+  line-height: 1.2;
+  align-self: flex-start;
+  flex: 1 1 auto;
+  text-align: right;
+  margin-top: 6px;
+  margin-left: auto;
+}
+
+/* Logo en la parte derecha del footer */
 .footer-logo {
   display: flex;
   align-items: center;
@@ -159,42 +215,11 @@
   flex: 1;
 }
 
-/* Level a la derecha con fondo amarillo */
-.level-display-footer {
-  background: #dcee2d;
-  height: 200px;
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-}
-
-.level-label-footer {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 50px;
-  color: #211f23;
-  letter-spacing: -0.55px;
-  line-height: 1.5;
-  margin-bottom: -8px;
-}
-
-.level-number-footer {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
-  font-size: 100px;
-  color: #211f23;
-  letter-spacing: -1.1px;
-  line-height: 1.5;
-}
-
 /* === LOGO CON EFECTO DE LLENADO === */
 .logo-container {
   position: relative;
   width: 200px;
-  height: 184.39px;
+  height: 200px;
   overflow: hidden;
 }
 
@@ -205,8 +230,6 @@
   width: 100%;
   height: 100%;
   z-index: 2;
-  opacity: 0.3;
-  filter: brightness(0.8);
   pointer-events: none;
 }
 
@@ -226,5 +249,5 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 184.39px;
+  height: 200px;
 }
