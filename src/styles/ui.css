@@ -41,31 +41,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 3px solid #dcee2d;
   gap: 16px;
 }
 
 .header-logo-container {
-  flex: 2 1 0;
+  flex: 2;
   display: flex;
   align-items: center;
 }
 
 .logo-top {
   height: 68px;
-  width: 132px;
+  width: 100%;
   object-fit: contain;
 }
 
 /* Next piece container on the right */
 .next-piece-container {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* right align */
-  justify-content: center;
-  border: 1px solid #dcee2d;
-  gap: 8px;
-  padding: 8px 16px;
+  flex: 1;
+  position: relative;
+  display: block;
+  height: 100%;
+  border-left: 3px solid #dcee2d;
+  padding: 0;
 }
 
 .next-piece-label {
@@ -76,16 +75,20 @@
   letter-spacing: -0.3px;
   line-height: 1.5;
   text-align: left;
-  align-self: flex-start;
+  position: absolute;
+  top: 16px;
+  left: 16px;
 }
 
 .next-piece-preview {
   width: auto;
   max-width: 300px;
-  height: 150px;
+  height: auto;
   box-sizing: border-box;
   background: none;
-  align-self: flex-end;
+  position: absolute;
+  top: 60%;
+  left: 75%;
 }
 
 /* Color zones en la parte inferior del header */
