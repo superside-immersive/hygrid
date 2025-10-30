@@ -185,7 +185,7 @@ export class GameStateManager {
     }
     
     showIntroScreen() {
-        this.hideGameUI();
+        this.showGameUI();
         if (this.introScreen) this.introScreen.style.display = 'flex';
         this.showCountdown();
         if (this.idleScene) this.idleScene.hide();
@@ -197,7 +197,6 @@ export class GameStateManager {
     }
     
     showGameOverScreen() {
-        this.hideGameUI();
         if (!this.gameOverScreen) return;
         this.gameOverScreen.style.display = 'flex';
         
