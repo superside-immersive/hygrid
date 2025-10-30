@@ -1,4 +1,4 @@
-# 📋 Historial de Cambios - Tetris HyGrid
+# 📋 Historial de Cambios - Tetris Cloud Stacker
 
 ## 🎯 Resumen General
 
@@ -202,7 +202,7 @@ src/
 ## 📁 Estructura Final
 
 ```
-hygrid/
+cloud-stacker/
 ├── index.html              ← HTML limpio (145 líneas)
 ├── README.md               ← Documentación unificada
 │

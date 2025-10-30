@@ -1,4 +1,4 @@
-# 🎮 Tetris HyGrid
+# 🎮 Tetris Cloud Stacker
 
 Tetris game with color-zone mechanics, built with Three.js and modular JavaScript.
 
@@ -88,7 +88,7 @@ Activated every 10,000 points for 5 seconds:
 ## 📁 Project Structure
 
 ```
-hygrid/
+cloud-stacker/
 ├── index.html              ← Main HTML (refactored)
 ├── README.md               ← This documentation
 │
@@ -168,6 +168,33 @@ hygrid/
 - **MIDI Player** - Background music
 - **ES6 Modules** - Modular architecture
 - **CSS3** - Animations and styles
+
+---
+
+## 🖥️ Desktop App (Electron)
+
+Run the game as a macOS desktop app and build a distributable.
+
+### Prerequisites
+- Node.js 18+
+- macOS (for building `.app`/`.dmg`)
+
+### Install dependencies
+```bash
+npm install
+```
+
+### Run in Electron (development)
+```bash
+npm run dev
+```
+
+### Build macOS app
+```bash
+npm run build:mac
+```
+
+Artifacts will be generated in the `dist/` directory.
 
 ---
 

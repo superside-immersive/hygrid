@@ -1,4 +1,4 @@
-# 🎮 Tetris HyGrid
+# 🎮 Tetris Cloud Stacker
 
 Juego de Tetris con mecánica de zonas de colores, construido con Three.js y JavaScript modular.
 
@@ -88,7 +88,7 @@ Cada 10,000 puntos se activa durante 5 segundos:
 ## 📁 Estructura del Proyecto
 
 ```
-hygrid/
+cloud-stacker/
 ├── index.html              ← HTML principal (refactorizado)
 ├── README.md               ← Esta documentación
 │
@@ -382,7 +382,7 @@ Todos los colores y diseño son idénticos al original:
 
 
 
-Desarrollado con ❤️ por el equipo HyGrid### No hay música
+Desarrollado con ❤️ por el equipo Cloud Stacker### No hay música
 
 - La música se carga desde `./midiplayer/dance.mid`
 
