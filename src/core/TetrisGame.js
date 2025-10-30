@@ -751,6 +751,7 @@ export class TetrisGame {
         if (typeof window.hideYellowBonus === 'function') {
             window.hideYellowBonus();
         }
+        this.isInitialized = true;
     }
     
     createBlock(color) {
@@ -1033,14 +1034,7 @@ export class TetrisGame {
         }
     }
     
-    startGame() {
-        if (!this.isGameOver) {
-            this.resetGame();
-        } else {
-            this.resetGame();
-        }
-        
-        this.isInitialized = true;
+    startGame() {       
         this.spawnPiece();
         
         if (typeof window.startMusic === 'function') {

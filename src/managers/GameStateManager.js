@@ -342,6 +342,10 @@ export class GameStateManager {
     startGame() {
         console.log('🎮 Iniciando juego...');
         this.changeState('intro');
+        if (window.tetrisGame) {
+            window.tetrisGame.resetGame();
+            this.updateGameUI();
+        }
     }
     
     startTetrisGame() {
