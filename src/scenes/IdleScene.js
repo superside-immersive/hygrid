@@ -95,7 +95,7 @@ export class IdleScene {
         
         // Configurar cámara para la escena idle
         // Zoom más cercano (frustumSize más pequeño = más zoom)
-        const aspect = 900 / 1600;
+        const aspect = 900 / 1200;
         const frustumSize = 2; // Muy zoomeado para ver solo 2 cubos de ancho
         
         this.camera.left = -frustumSize * aspect;
@@ -182,8 +182,8 @@ export class IdleScene {
         this.camera.rotation.copy(this.originalCameraRotation);
         
         // Restaurar frustum original
-        const aspect = 900 / 1600;
-        const frustumSize = 10;
+        const aspect = 900 / 1200;
+        const frustumSize = 8;
         this.camera.left = -frustumSize * aspect;
         this.camera.right = frustumSize * aspect;
         this.camera.top = frustumSize;

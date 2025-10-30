@@ -9,9 +9,9 @@ export class App {
         this.canvas = document.getElementById('game-canvas');
         this.scene = new THREE.Scene();
         
-        // Cámara ortográfica para vista más limpia
-        const aspect = 900 / 1600;
-        const frustumSize = 21.333;
+        // Cámara ortográfica para vista 2D
+        const aspect = 900 / 1200;
+        const frustumSize = 8;
         this.camera = new THREE.OrthographicCamera(
             -frustumSize * aspect, frustumSize * aspect,
             frustumSize, -frustumSize,
@@ -45,14 +45,15 @@ export class App {
     }
     
     setupRenderer() {
-        this.renderer.setSize(900, 1600);
+        this.renderer.setSize(900, 1200);
         this.renderer.setClearColor(0x000000);
     }
     
     setupCamera() {
-        this.camera.position.z = 16;
+        this.camera.position.z = 10;
         this.camera.position.y = -8;
         this.camera.position.x = 0;
+        this.camera.updateProjectionMatrix();
     }
     
     setupLights() {

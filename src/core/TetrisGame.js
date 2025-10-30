@@ -1,5 +1,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-
+import { Line2 } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/Line2.js';
+import { LineGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineGeometry.js';
+import { LineMaterial } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineMaterial.js';
 // ==================== TETRIS GAME ====================
 export class TetrisGame {
     constructor(scene, camera) {
@@ -39,7 +41,7 @@ export class TetrisGame {
         this.level = 1;
         this.LEVEL_THRESHOLD = 10000;
         this.BASE_TICK_CYCLE = 35;
-        this.SPEED_INCREASE_PER_LEVEL = 0.2;
+        this.SPEED_INCREASE_PER_LEVEL = 0.3;
         
         // Yellow mode (bonus)
         this.lastYellowModeScore = 0;
@@ -139,41 +141,47 @@ export class TetrisGame {
             else lineColor = GREEN_ZONE_COLOR;
             
             this.createColoredVerticalLine(worldX, lineColor);
+
+            if(x === 4) this.createColoredVerticalLine(worldX, BLUE_ZONE_COLOR, 3);
+            if(x === 8) this.createColoredVerticalLine(worldX, GREEN_ZONE_COLOR, 3);
         }
     }
     
-    createColoredHorizontalLine(worldY, xStart, xEnd, color) {
-        const points = [
-            new THREE.Vector3(this.calculateWorldX(xStart) - this.blockSize / 2, worldY, -0.5),
-            new THREE.Vector3(this.calculateWorldX(xEnd) + this.blockSize / 2, worldY, -0.5)
+    createColoredHorizontalLine(worldY, xStart, xEnd, color, pixelOffset = 0) {
+        const positions = [
+            this.calculateWorldX(xStart) - this.blockSize / 2, worldY, -0.5,
+            this.calculateWorldX(xEnd) + this.blockSize / 2, worldY, -0.5
         ];
-        
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const material = new THREE.LineBasicMaterial({ 
-            color: color, 
-            transparent: false, 
-            opacity: 1.0,
-            linewidth: 4
+        const geometry = new LineGeometry();
+        geometry.setPositions(positions);
+        const material = new LineMaterial({
+            color: color,
+            linewidth: 3,
+            worldUnits: false,
+            alphaToCoverage: true
         });
-        const line = new THREE.Line(geometry, material);
+        material.resolution = new THREE.Vector2(900, 1200);
+        const line = new Line2(geometry, material);
         this.scene.add(line);
         this.backgroundLines.push(line);
     }
     
-    createColoredVerticalLine(worldX, color) {
-        const points = [
-            new THREE.Vector3(worldX, this.calculateWorldY(0) + this.blockSize / 2, -0.5),
-            new THREE.Vector3(worldX, this.calculateWorldY(this.boardHeight - 1) - this.blockSize / 2, -0.5)
+    createColoredVerticalLine(worldX, color, pixelOffset = 0) {
+        const positions = [
+            worldX, this.calculateWorldY(0) + this.blockSize / 2, -0.5,
+            worldX, this.calculateWorldY(this.boardHeight - 1) - this.blockSize / 2, -0.5
         ];
-        
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const material = new THREE.LineBasicMaterial({ 
-            color: color, 
-            transparent: false, 
-            opacity: 1.0,
-            linewidth: 4
+        const geometry = new LineGeometry();
+        geometry.setPositions(positions);
+        const material = new LineMaterial({
+            color: color,
+            linewidth: 3,
+            worldUnits: false,
+            alphaToCoverage: true
         });
-        const line = new THREE.Line(geometry, material);
+        material.resolution = new THREE.Vector2(900, 1200);
+        const line = new Line2(geometry, material);
+        line.position.x += pixelOffset/300;
         this.scene.add(line);
         this.backgroundLines.push(line);
     }
@@ -1066,7 +1074,7 @@ export class TetrisGame {
         const speed = Math.min(4, 1 + (this.level - 1) * this.SPEED_INCREASE_PER_LEVEL);
         const tickCycle = Math.max(5, this.BASE_TICK_CYCLE / speed);
         
-        //this.ticks++;
+        this.ticks++;
         if (this.ticks >= tickCycle) {
             this.ticks = 0;
             this.movePiece();
