@@ -10,8 +10,8 @@ export class App {
         this.scene = new THREE.Scene();
         
         // Cámara ortográfica para vista más limpia
-        const aspect = 1166 / 1920;
-        const frustumSize = 10;
+        const aspect = 900 / 1600;
+        const frustumSize = 21.333;
         this.camera = new THREE.OrthographicCamera(
             -frustumSize * aspect, frustumSize * aspect,
             frustumSize, -frustumSize,
@@ -45,13 +45,13 @@ export class App {
     }
     
     setupRenderer() {
-        this.renderer.setSize(1166, 1920);
+        this.renderer.setSize(900, 1600);
         this.renderer.setClearColor(0x000000);
     }
     
     setupCamera() {
-        this.camera.position.z = 10;
-        this.camera.position.y = -6.2;
+        this.camera.position.z = 16;
+        this.camera.position.y = -8;
         this.camera.position.x = 0;
     }
     

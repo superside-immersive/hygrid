@@ -13,10 +13,10 @@ export class UIController {
     this.scaleUI();
   }
 
-  // Función para escalar la UI manteniendo la proporción de 1166x1920
+  // Función para escalar la UI manteniendo la proporción 16:9
   scaleUI() {
-    const targetWidth = 1166;
-    const targetHeight = 1920;
+    const targetWidth = 900;
+    const targetHeight = 1600;
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     
@@ -31,7 +31,7 @@ export class UIController {
     
     elements.forEach(element => {
       if (element) {
-        element.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        element.style.scale = scale;
       }
     });
   }

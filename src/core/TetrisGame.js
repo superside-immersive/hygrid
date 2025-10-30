@@ -8,7 +8,7 @@ export class TetrisGame {
         
         // Board configuration
         this.boardWidth = 12;
-        this.boardHeight = 20;
+        this.boardHeight = 16;
         this.blockSize = 1.0;
         
         // Colors
@@ -840,7 +840,7 @@ export class TetrisGame {
     }
     
     calculateWorldY(boardY) {
-        const yOffset = -3.5;
+        const yOffset = -8;
         return (this.boardHeight / 2 - boardY - 0.5) * this.blockSize + yOffset;
     }
     
@@ -1066,7 +1066,7 @@ export class TetrisGame {
         const speed = Math.min(4, 1 + (this.level - 1) * this.SPEED_INCREASE_PER_LEVEL);
         const tickCycle = Math.max(5, this.BASE_TICK_CYCLE / speed);
         
-        this.ticks++;
+        //this.ticks++;
         if (this.ticks >= tickCycle) {
             this.ticks = 0;
             this.movePiece();

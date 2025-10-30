@@ -403,7 +403,7 @@ Desarrollado con ❤️ por el equipo HyGrid### No hay música
 ## 📝 Notas
 
 - El juego se escala automáticamente para adaptarse a cualquier tamaño de ventana
-- Proporción fija: 1166x1920 (formato vertical)
+- Proporción fija: 1600 (formato vertical)
 - Totalmente funcional sin dependencias externas (excepto Three.js desde CDN)
 - No requiere build ni compilación
 
