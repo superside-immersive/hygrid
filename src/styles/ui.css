@@ -37,16 +37,55 @@
 
 .header-top-section {
   background: #000;
-  height: 225px;
+  height: 170px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header-logo-container {
+  flex: 2 1 0;
+  display: flex;
+  align-items: center;
 }
 
 .logo-top {
   height: 68px;
   width: 132px;
   object-fit: contain;
+}
+
+/* Next piece container on the right */
+.next-piece-container {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* right align */
+  justify-content: center;
+  border: 1px solid #dcee2d;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.next-piece-label {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 30px;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  line-height: 1.5;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.next-piece-preview {
+  width: auto;
+  max-width: 300px;
+  height: 150px;
+  box-sizing: border-box;
+  background: none;
+  align-self: flex-end;
 }
 
 /* Color zones en la parte inferior del header */
