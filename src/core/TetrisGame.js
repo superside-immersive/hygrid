@@ -1,7 +1,7 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import { Line2 } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/Line2.js';
-import { LineGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineGeometry.js';
-import { LineMaterial } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineMaterial.js';
+import * as THREE from '../three/three.module.js';
+import { Line2 } from '../three/examples/jsm/lines/Line2.js';
+import { LineGeometry } from '../three/examples/jsm/lines/LineGeometry.js';
+import { LineMaterial } from '../three/examples/jsm/lines/LineMaterial.js';
 // ==================== TETRIS GAME ====================
 export class TetrisGame {
     constructor(scene, camera) {
