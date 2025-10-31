@@ -457,8 +457,8 @@ export class GameStateManager {
             item.innerHTML = `
                 <span class="rank">${rank.toString().padStart(2, '0')}</span>
                 <span class="name">${name}</span>
-                <span class="score">${entry.score.toString().padStart(7, '0')}</span>
-                <span class="lines">${entry.lines.toString().padStart(3, '0')} LINES</span>
+                <span class="score">${entry.score.toString()}</span>
+                <!--<span class="lines">${entry.lines.toString().padStart(3, '0')} LINES</span>-->
             `;
             listElement.appendChild(item);
         });

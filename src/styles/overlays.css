@@ -26,9 +26,17 @@
   animation: fadeIn 0.3s ease-in;
 }
 
-/* solid background variant for specific screens */
-#name-input-screen.solid-bg {
+.solid-bg {
   background: #211F23;
+}
+
+.overlay-top-title {
+  margin-bottom: 1.5rem;
+}
+
+.overlay-top-logo {
+  width: 360px;
+  height: auto;
 }
 
 /* === PANTALLA IDLE === */
@@ -42,7 +50,6 @@
   width: 400px;
   height: auto;
   animation: floatLogo 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(220, 238, 45, 0.3));
 }
 
 /* === PANTALLA INTRO === */
@@ -80,16 +87,6 @@
 }
 
 /* === NAME INPUT SCREEN === */
-#name-input-screen .name-input-top-title {
-  margin-bottom: 1.5rem;
-}
-
-#name-input-screen .name-input-top-logo {
-  width: 360px;
-  height: auto;
-  filter: drop-shadow(0 0 20px rgba(220, 238, 45, 0.3));
-}
-
 #name-input-screen .name-input-title {
   font-family: 'DM Sans', sans-serif;
   font-weight: 200;
@@ -196,8 +193,7 @@
 
 /* === SCOREBOARD === */
 #scoreboard-screen {
-  background: transparent !important;
-  padding: 80px 40px;
+  padding: 80px 120px;
 }
 
 #scoreboard-screen .scoreboard-title {
@@ -217,17 +213,14 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  border: 3px solid #dcee2d;
-  background: rgba(33, 31, 35, 0.95);
 }
 
 .scoreboard-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px 50px;
+  padding: 10px 10px;
   background: transparent;
-  border-bottom: 2px solid rgba(220, 238, 45, 0.3);
   transition: background 0.2s ease;
 }
 
@@ -241,26 +234,26 @@
 
 .scoreboard-item .rank {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  font-size: 50px;
-  color: #dcee2d;
-  min-width: 80px;
+  font-weight: 300;
+  font-size: 60px;
+  color: #ffffff;
+  min-width: 100px;
 }
 
 .scoreboard-item .score {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
+  font-weight: 300;
   font-size: 60px;
-  color: #dcee2d;
-  flex: 1;
-  text-align: center;
+  color: #ffffff;
+  min-width: 200px;
+  text-align: right;
   letter-spacing: -0.66px;
 }
 
 .scoreboard-item .lines {
   font-family: 'DM Sans', sans-serif;
   font-weight: 200;
-  font-size: 40px;
+  font-size: 60px;
   color: #656565;
   min-width: 120px;
   text-align: right;
@@ -308,7 +301,7 @@
 .scoreboard-item .name {
   font-family: 'DM Sans', sans-serif;
   font-weight: 700;
-  font-size: 50px;
+  font-size: 60px;
   color: #dcee2d;
   min-width: 150px;
   text-align: left;
