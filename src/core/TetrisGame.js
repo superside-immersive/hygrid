@@ -24,6 +24,7 @@ export class TetrisGame {
         this.board = [];
         this.currentPiece = null;
         this.nextPiece = null;
+        this.nextPieceIndex = null;
         this.currentPieceCubes = [];
         this.currentColor = 1;
         this.pieceX = 0;
@@ -67,8 +68,9 @@ export class TetrisGame {
         // Initialize
         this.initializeBoard();
         this.createBackground();
+        //this.drawAllPieces(); // For creating the pieces on screen for the next piece preview
     }
-    
+        
     createMaterials() {
         this.redMaterial = null;
         this.blueMaterial = null;
@@ -190,6 +192,16 @@ export class TetrisGame {
         const randomIndex = Math.floor(Math.random() * this.pieces.length);
         this.nextPiece = JSON.parse(JSON.stringify(this.pieces[randomIndex]));
         this.nextPiece.rotationState = 0;
+        this.nextPieceIndex = randomIndex;
+        this.updateNextPiecePreview();
+    }
+    
+    updateNextPiecePreview() {
+        const previewElement = document.getElementById('next-piece-preview');
+        if (previewElement && this.nextPieceIndex !== null) {
+            const imagePath = `assets/images/pieces/${this.nextPieceIndex}.jpg`;
+            previewElement.innerHTML = `<img src="${imagePath}" alt="Next piece" style="width: 100%; height: 100%; object-fit: contain;">`;
+        }
     }
     
     spawnPiece() {
@@ -735,6 +747,7 @@ export class TetrisGame {
         
         this.currentPiece = null;
         this.nextPiece = null;
+        this.nextPieceIndex = null;
         
         // Actualizar UI
         const scoreElement = document.getElementById('score-value');
@@ -751,6 +764,13 @@ export class TetrisGame {
         if (typeof window.hideYellowBonus === 'function') {
             window.hideYellowBonus();
         }
+        
+        // Clear next piece preview
+        const previewElement = document.getElementById('next-piece-preview');
+        if (previewElement) {
+            previewElement.innerHTML = '';
+        }
+        
         this.isInitialized = true;
     }
     
@@ -976,6 +996,50 @@ export class TetrisGame {
             
             this.scene.add(cube);
             this.currentPieceCubes.push(cube);
+        });
+    }
+    
+    // Helper to draw all available pieces on screen for reference/debugging
+    // This method does NOT modify current gameplay state (board or active piece)
+    drawAllPieces() {
+        // Start near the top-left; increment rows so each piece group sits below the previous
+        let currentRowOffset = 0;
+        let currentColumnOffset = 0;
+        const rowSpacing = 0.25; // blank rows between piece groups
+        const baseX = 2; // slight offset from far left so pieces are visible comfortably
+        const baseY = 2;
+
+        this.pieces.forEach((piece, index) => {
+            const coords = piece.rotations[0];
+
+            // Determine vertical footprint of the piece to space the next group correctly
+            const minLocalY = Math.min(...coords.map(c => c.y));
+            const maxLocalY = Math.max(...coords.map(c => c.y));
+            const pieceHeightInRows = (maxLocalY - minLocalY + 1);
+
+            coords.forEach((coord, index) => {
+                // Determine block color (supports multicolor pieces)
+                let blockColor = piece.color;
+                if (piece.blockColors) {
+                    const blockColors = piece.blockColors[0];
+                    if (blockColors && blockColors[index] !== undefined) {
+                        blockColor = blockColors[index];
+                    }
+                }
+
+                const cube = this.createBlock(blockColor);
+                const worldX = this.calculateWorldX(coord.x + baseX + currentColumnOffset);
+                const worldY = this.calculateWorldY(coord.y + baseY +currentRowOffset);
+                cube.position.set(worldX, worldY, 0);
+                this.scene.add(cube);
+            });
+
+            if(index > 0 && index % 6 === 0) {
+                currentColumnOffset += 4;
+                currentRowOffset = 0;
+            }else{
+                currentRowOffset += pieceHeightInRows + rowSpacing;
+            }
         });
     }
     

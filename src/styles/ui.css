@@ -80,13 +80,14 @@
 
 .next-piece-preview {
   width: auto;
-  max-width: 300px;
+  width: 180px;
   height: auto;
   box-sizing: border-box;
   background: none;
   position: absolute;
   top: 60%;
-  left: 75%;
+  left: 55%;
+  transform: translate(-50%, -50%);
 }
 
 /* Color zones en la parte inferior del header */
