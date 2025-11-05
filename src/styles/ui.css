@@ -47,11 +47,13 @@
   flex: 2;
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 30px;
 }
 
 .logo-top {
-  height: 68px;
-  width: 100%;
+  height: auto;
+  max-width: 512px;
   object-fit: contain;
 }
 
@@ -108,8 +110,8 @@
 
 .zone-text {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
-  font-size: 42px;
+  font-weight: 300;
+  font-size: 30px;
   letter-spacing: 0.84px;
   line-height: 1.5;
   z-index: 2;

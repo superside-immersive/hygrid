@@ -208,8 +208,8 @@ export class GameStateManager {
         if (window.tetrisGame) {
             const scoreValue = document.getElementById('final-score-value');
             const linesValue = document.getElementById('final-lines-value');
-            if (scoreValue) scoreValue.textContent = window.tetrisGame.score.toString().padStart(4, '0');
-            if (linesValue) linesValue.textContent = window.tetrisGame.lines.toString().padStart(3, '0');
+            if (scoreValue) scoreValue.textContent = window.tetrisGame.score.toString();
+            if (linesValue) linesValue.textContent = window.tetrisGame.lines.toString();
         }
     }
 
@@ -455,10 +455,9 @@ export class GameStateManager {
             }
             const name = (entry.name || 'AAA').substring(0, 3).toUpperCase();
             item.innerHTML = `
-                <span class="rank">${rank.toString().padStart(2, '0')}</span>
+                <span class="rank">${rank.toString()}</span>
                 <span class="name">${name}</span>
                 <span class="score">${entry.score.toString()}</span>
-                <!--<span class="lines">${entry.lines.toString().padStart(3, '0')} LINES</span>-->
             `;
             listElement.appendChild(item);
         });

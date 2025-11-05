@@ -31,12 +31,12 @@
 }
 
 .overlay-top-title {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .overlay-top-logo {
-  width: 360px;
-  height: auto;
+  height: 200px;
+  width: auto;
 }
 
 /* === PANTALLA IDLE === */
@@ -47,8 +47,8 @@
 }
 
 #idle-screen .idle-logo {
-  width: 400px;
-  height: auto;
+  height: 200px;
+  width: auto;
   animation: floatLogo 3s ease-in-out infinite;
 }
 
@@ -184,7 +184,7 @@
 #name-input-screen .final-score-value,
 #name-input-screen .final-lines-value {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 60px;
   color: #dcee2d;
   text-align: right;
@@ -196,32 +196,24 @@
   padding: 80px 120px;
 }
 
-#scoreboard-screen .scoreboard-title {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 200;
-  font-size: 80px;
-  color: #dcee2d;
-  margin-bottom: 60px;
-  letter-spacing: -0.88px;
-  text-align: center;
-}
-
 .scoreboard-list {
   display: flex;
   flex-direction: column;
   gap: 0;
-  max-width: 800px;
+  max-width: 650px;
   width: 100%;
   margin: 0 auto;
+  border: 4px solid #dcee2d;
 }
 
 .scoreboard-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 10px;
+  padding: 10px 20px;
   background: transparent;
   transition: background 0.2s ease;
+  border-bottom: 2px solid #dcee2d;
 }
 
 .scoreboard-item:last-child {
@@ -234,29 +226,20 @@
 
 .scoreboard-item .rank {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 700;
   font-size: 60px;
-  color: #ffffff;
+  color: #dcee2d;
   min-width: 100px;
 }
 
 .scoreboard-item .score {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 700;
   font-size: 60px;
-  color: #ffffff;
+  color: #dcee2d;
   width: 300px;
   text-align: right;
   letter-spacing: -0.66px;
-}
-
-.scoreboard-item .lines {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 200;
-  font-size: 60px;
-  color: #656565;
-  min-width: 120px;
-  text-align: right;
 }
 
 .scoreboard-empty {
@@ -304,7 +287,7 @@
   font-size: 60px;
   color: #dcee2d;
   min-width: 150px;
-  text-align: left;
+  text-align: center;
 }
 
 .scoreboard-item.highlighted {
