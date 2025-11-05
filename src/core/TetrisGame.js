@@ -556,18 +556,6 @@ export class TetrisGame {
     addScore(points) {
         this.score += points;
         
-        // Actualizar UI del score
-        const scoreElement = document.getElementById('score-value');
-        if (scoreElement) {
-            scoreElement.textContent = String(this.score).padStart(6, '0');
-        }
-        
-        // Actualizar logo fill con progreso hacia el próximo power-up
-        if (typeof window.updateLogoFill === 'function') {
-            const progressScore = this.score - this.lastYellowModeScore;
-            window.updateLogoFill(progressScore);
-        }
-        
         const newLevel = Math.floor(this.score / this.LEVEL_THRESHOLD) + 1;
         if (newLevel > this.level) {
             this.level = newLevel;
@@ -614,10 +602,6 @@ export class TetrisGame {
     
     exitYellowMode() {
         this.isYellowMode = false;
-        
-        if (typeof window.hideYellowBonus === 'function') {
-            window.hideYellowBonus();
-        }
         
         this.restoreAllBlockColors();
         
@@ -770,9 +754,6 @@ export class TetrisGame {
         }
         if (typeof window.updateLogoFill === 'function') {
             window.updateLogoFill(0);
-        }
-        if (typeof window.hideYellowBonus === 'function') {
-            window.hideYellowBonus();
         }
         
         // Clear next piece preview
@@ -1139,11 +1120,7 @@ export class TetrisGame {
             const elapsed = this.gameTime - this.yellowModeStartTime;
             const remaining = this.YELLOW_MODE_DURATION - elapsed;
             
-            if (remaining > 0) {
-                if (typeof window.showYellowBonus === 'function') {
-                    window.showYellowBonus(remaining);
-                }
-            } else {
+            if (remaining <= 0) {
                 this.exitYellowMode();
             }
         }

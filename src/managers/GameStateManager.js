@@ -376,9 +376,17 @@ export class GameStateManager {
             levelElement.innerHTML = `<span class="score-gray">${grayPart}</span><span class="score-yellow">${yellowPart}</span>`;
         }
         if (typeof window.updateLogoFill === 'function') {
-            // Calcular el progreso hacia el próximo power-up (score desde el último power-up)
-            const progressScore = window.tetrisGame.score - window.tetrisGame.lastYellowModeScore;
-            window.updateLogoFill(progressScore, window.tetrisGame.YELLOW_MODE_THRESHOLD);
+            if(window.tetrisGame.isYellowMode) {
+                const elapsed = window.tetrisGame.gameTime - window.tetrisGame.yellowModeStartTime;
+                const remaining = window.tetrisGame.YELLOW_MODE_DURATION - elapsed;
+                if (remaining >= 0) {
+                    window.updateLogoFill(remaining, window.tetrisGame.YELLOW_MODE_DURATION);
+                }
+            } else {
+                // Calcular el progreso hacia el próximo power-up (score desde el último power-up)
+                const progressScore = window.tetrisGame.score - window.tetrisGame.lastYellowModeScore;
+                window.updateLogoFill(progressScore, window.tetrisGame.YELLOW_MODE_THRESHOLD);
+            }
         }
     }
     

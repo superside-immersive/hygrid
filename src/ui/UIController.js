@@ -54,22 +54,6 @@ export class UIController {
     }
   }
 
-  // === SISTEMA DE INDICADOR DE BONUS AMARILLO ===
-  showYellowBonus(timeRemaining) {
-    const indicator = document.getElementById('yellow-bonus-indicator');
-    const timer = document.getElementById('bonus-timer');
-    if (!indicator || !timer) return;
-    
-    indicator.classList.add('active');
-    timer.textContent = `${Math.ceil(timeRemaining)}s`;
-  }
-
-  hideYellowBonus() {
-    const indicator = document.getElementById('yellow-bonus-indicator');
-    if (!indicator) return;
-    indicator.classList.remove('active');
-  }
-
   // === SISTEMA DE NIVEL ===
   updateLevel(level) {
     const levelFooter = document.getElementById('level-number-footer');
@@ -124,8 +108,6 @@ const uiController = new UIController();
 
 // Exportar funciones globales para que el HTML legacy pueda usarlas
 window.updateLogoFill = (score, maxScore) => uiController.updateLogoFill(score, maxScore);
-window.showYellowBonus = (timeRemaining) => uiController.showYellowBonus(timeRemaining);
-window.hideYellowBonus = () => uiController.hideYellowBonus();
 window.updateLevel = (level) => uiController.updateLevel(level);
 window.triggerBonusFlash = () => uiController.triggerBonusFlash();
 window.showPowerUpOverlay = () => uiController.showPowerUpOverlay();
