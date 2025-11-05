@@ -152,8 +152,32 @@
 #name-input-screen .name-input-hint {
   font-family: 'DM Sans', sans-serif;
   font-weight: 200;
-  font-size: 32px;
+  font-size: 26px;
   color: #656565;
+}
+
+#name-input-screen .name-input-continue {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 40px;
+  color: #dcee2d;
+  text-align: center;
+  padding: 10px 25px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  border: 3px solid #dcee2d;
+  box-shadow: 10px 10px #dcee2d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+#name-input-screen .name-input-continue .continue-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 #name-input-screen .final-stats-box {
@@ -161,8 +185,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 380px;
-  height: 380px;
+  width: 450px;
+  height: 300px;
   margin-top: 24px;
   gap: 18px;
 }
@@ -176,7 +200,7 @@
   padding: 0 24px;
   font-family: 'DM Sans', sans-serif;
   font-weight: 200;
-  font-size: 40px;
+  font-size: 60px;
   color: #ffffff;
   margin: 10px 0;
 }
@@ -184,12 +208,52 @@
 #name-input-screen .final-score-value,
 #name-input-screen .final-lines-value {
   font-family: 'DM Sans', sans-serif;
-  font-weight: 400;
-  font-size: 60px;
+  font-weight: 500;
+  font-size: 80px;
   color: #dcee2d;
   text-align: right;
 }
 
+#name-input-screen .encrypting-message {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 60px;
+  color: #dcee2d;
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 20px;
+}
+
+#name-input-screen .encrypting-message .dots {
+  display: inline-block;
+}
+
+#name-input-screen .encrypting-message .dot {
+  display: inline-block;
+  opacity: 0;
+  animation: dotBlink 1.4s ease-in-out infinite;
+}
+
+#name-input-screen .encrypting-message .dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+#name-input-screen .encrypting-message .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+#name-input-screen .encrypting-message .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotBlink {
+  0%, 80%, 100% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+}
 
 /* === SCOREBOARD === */
 #scoreboard-screen {
@@ -266,7 +330,7 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
-.lighedgefooter {
+.lightedge-footer {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,7 +338,7 @@
   margin-top: 30px;
 }
 
-.lighedgefooter .lightedge-logo-full {
+.lightedge-footer .lightedge-logo-full {
   height: 48px;
   width: auto;
   opacity: 0.95;
