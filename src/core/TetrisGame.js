@@ -56,6 +56,10 @@ export class TetrisGame {
         this.flashDuration = 0.5;
         this.gameTime = 0;
         
+        // Falling animation for blocks after row clear
+        this.fallingCubes = new Map();
+        this.fallStepDuration = 0.15; // Duration for each step (half unit, then full unit)
+        
         // Background grid lines
         this.backgroundLines = [];
         
@@ -482,14 +486,23 @@ export class TetrisGame {
         console.log(`✅ Fila ${row} completamente eliminada`);
     }
     
+    startFallingAnimation(cube, targetBoardY) {
+        if (!cube) return;
+        const startY = cube.position.y;
+        const targetY = this.calculateWorldY(targetBoardY);
+        this.fallingCubes.set(cube, {
+            startY: startY,
+            targetY: targetY,
+            startTime: this.gameTime,
+            step: 0 // 0 = first half step, 1 = second half step
+        });
+    }
+    
     moveRedColorSectionRowsDown(clearedRow) {
         for (let y = clearedRow; y > 0; y--) {
             for (let x = 0; x < 4; x++) {
                 this.board[y][x] = this.board[y - 1][x];
-                
-                if (this.board[y][x]) {
-                    this.board[y][x].position.y = this.calculateWorldY(y);
-                }
+                this.startFallingAnimation(this.board[y][x], y);
             }
         }
         
@@ -502,10 +515,7 @@ export class TetrisGame {
         for (let y = clearedRow; y > 0; y--) {
             for (let x = 4; x < 8; x++) {
                 this.board[y][x] = this.board[y - 1][x];
-                
-                if (this.board[y][x]) {
-                    this.board[y][x].position.y = this.calculateWorldY(y);
-                }
+                this.startFallingAnimation(this.board[y][x], y);
             }
         }
         
@@ -518,10 +528,7 @@ export class TetrisGame {
         for (let y = clearedRow; y > 0; y--) {
             for (let x = 8; x < 12; x++) {
                 this.board[y][x] = this.board[y - 1][x];
-                
-                if (this.board[y][x]) {
-                    this.board[y][x].position.y = this.calculateWorldY(y);
-                }
+                this.startFallingAnimation(this.board[y][x], y);
             }
         }
         
@@ -718,6 +725,9 @@ export class TetrisGame {
         if (this.flashingCubes && this.flashingCubes.clear) {
             this.flashingCubes.clear();
         }
+        if (this.fallingCubes && this.fallingCubes.clear) {
+            this.fallingCubes.clear();
+        }
     }
     
     resetGame() {
@@ -769,6 +779,14 @@ export class TetrisGame {
         const previewElement = document.getElementById('next-piece-preview');
         if (previewElement) {
             previewElement.innerHTML = '';
+        }
+        
+        // Clear animation effects
+        if (this.flashingCubes && this.flashingCubes.clear) {
+            this.flashingCubes.clear();
+        }
+        if (this.fallingCubes && this.fallingCubes.clear) {
+            this.fallingCubes.clear();
         }
         
         this.isInitialized = true;
@@ -1115,6 +1133,7 @@ export class TetrisGame {
         this.gameTime += deltaTime;
         
         this.updateFlashEffects();
+        this.updateFallingCubes();
         
         if (this.isYellowMode) {
             const elapsed = this.gameTime - this.yellowModeStartTime;
@@ -1181,6 +1200,51 @@ export class TetrisGame {
         
         cubesToRemove.forEach(cube => {
             this.flashingCubes.delete(cube);
+        });
+    }
+    
+    updateFallingCubes() {
+        const currentTime = this.gameTime;
+        const cubesToRemove = [];
+        const halfBlockSize = this.blockSize / 2;
+        
+        this.fallingCubes.forEach((fallData, cube) => {
+            const elapsed = currentTime - fallData.startTime;
+            const totalDistance = fallData.startY - fallData.targetY; // negative because Y decreases downward
+            
+            if (fallData.step === 0) {
+                // First step: move down half a unit
+                if (elapsed >= this.fallStepDuration) {
+                    // Complete first step, move to midpoint
+                    const midpointY = fallData.startY - halfBlockSize;
+                    cube.position.y = midpointY;
+                    fallData.step = 1;
+                    fallData.startTime = currentTime; // Reset timer for second step
+                } else {
+                    // Animate to half way
+                    const progress = elapsed / this.fallStepDuration;
+                    const currentY = fallData.startY - (halfBlockSize * progress);
+                    cube.position.y = currentY;
+                }
+            } else if (fallData.step === 1) {
+                // Second step: move down the remaining distance
+                const remainingDistance = totalDistance - halfBlockSize;
+                if (elapsed >= this.fallStepDuration) {
+                    // Complete animation
+                    cube.position.y = fallData.targetY;
+                    cubesToRemove.push(cube);
+                } else {
+                    // Animate to final position
+                    const progress = elapsed / this.fallStepDuration;
+                    const midpointY = fallData.startY - halfBlockSize;
+                    const currentY = midpointY - (remainingDistance * progress);
+                    cube.position.y = currentY;
+                }
+            }
+        });
+        
+        cubesToRemove.forEach(cube => {
+            this.fallingCubes.delete(cube);
         });
     }
     
