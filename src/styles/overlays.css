@@ -52,6 +52,30 @@
   animation: floatLogo 3s ease-in-out infinite;
 }
 
+#idle-screen .idle-text {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 40px;
+  color: #dcee2d;
+  text-align: center;
+  padding: 10px 25px;
+  margin-top: 50px;
+  margin-bottom: 24px;
+  border: 3px solid #dcee2d;
+  box-shadow: 10px 10px #dcee2d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+#idle-screen .idle-text .continue-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 /* === PANTALLA INTRO === */
 #intro-screen .intro-message {
   font-family: 'DM Sans', sans-serif;
