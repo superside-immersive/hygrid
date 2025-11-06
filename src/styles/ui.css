@@ -148,6 +148,52 @@
   align-items: center;
   justify-content: center;
   pointer-events: all;
+  position: relative;
+}
+
+.footer-notification {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 76%;
+  height: 100%;
+  background: #dcee2d;
+  padding: 40px 30px;
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: left;
+  justify-content: space-between;
+  gap: 30px;
+  z-index: 101;
+  animation: footerNotificationFlash 1.5s ease-in-out infinite;
+}
+
+@keyframes footerNotificationFlash {
+  0%, 100% {
+    background: #dcee2d;
+  }
+  50% {
+    background: #f0ff5c;
+  }
+}
+
+.footer-notification-text {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 48px;
+  color: #000000;
+  line-height: 1.3;
+  flex: 1;
+  text-align: left;
+}
+
+.footer-notification-logo {
+  height: 66px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: brightness(0);
 }
 
 .footer-content {
