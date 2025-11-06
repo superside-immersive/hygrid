@@ -1144,7 +1144,19 @@ export class TetrisGame {
             
             if (elapsed >= this.flashDuration) {
                 if (flashData.isError) {
-                    this.applyColorToMesh(cube, this.GRAY_COLOR);
+                    // If Yellow Mode is active, convert gray blocks to yellow
+                    if (this.isYellowMode) {
+                        if (cube instanceof THREE.Group) {
+                            cube.children.forEach(child => {
+                                if (child.material && !child.userData.isInnerCube) {
+                                    child.material.color.setHex(this.YELLOW_COLOR_HEX);
+                                    child.material.opacity = 0.95;
+                                }
+                            });
+                        }
+                    } else {
+                        this.applyColorToMesh(cube, this.GRAY_COLOR);
+                    }
                 } else {
                     if (this.isYellowMode) {
                         if (cube instanceof THREE.Group) {
