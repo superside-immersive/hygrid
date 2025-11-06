@@ -216,6 +216,29 @@ export class GameStateManager {
     showNameInputScreen() {
         this.hideGameUI();
         if (!this.nameInputScreen) return;
+        
+        // Select random encrypting message text
+        const encryptingMessages = [
+            'Encrypting high scores...',
+            'That escalated quickly. Executing DR plan...',
+            'Your S3 bucket was public. So is your score.',
+            'Game over. Cost Explorer just flagged you for overspending.',
+            'Instance terminated. Reason: slow reflexes.',
+        ];
+        const randomMessage = encryptingMessages[Math.floor(Math.random() * encryptingMessages.length)];
+        
+        // Update the encrypting message text
+        const encryptingMessageElement = this.nameInputScreen.querySelector('.encrypting-message');
+        if (encryptingMessageElement) {
+            // Preserve the dots structure
+            if(randomMessage.endsWith('...')) {
+                const dotsHTML = '<span class="dots"><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span>';
+                encryptingMessageElement.innerHTML = randomMessage.slice(0, -3) + dotsHTML;
+            } else {
+                encryptingMessageElement.innerHTML = randomMessage;
+            }
+        }
+        
         this.nameInputScreen.style.display = 'flex';
 
         // Reset name input state
