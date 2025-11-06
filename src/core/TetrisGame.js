@@ -63,6 +63,9 @@ export class TetrisGame {
         // Background grid lines
         this.backgroundLines = [];
         
+        // Footer notification timeout tracking
+        this.footerNotificationTimeout = null;
+        
         // Materials
         this.createMaterials();
         
@@ -243,6 +246,7 @@ export class TetrisGame {
         const coords = this.getCurrentPieceCoords();
         let allInCorrectZone = true;
         let correctColorBlocks = 0;
+        let incorrectColorBlocks = 0;
         
         coords.forEach((coord, index) => {
             const worldX = coord.x + this.pieceX;
@@ -277,6 +281,7 @@ export class TetrisGame {
                     
                     if (!isCorrectZone && !this.isYellowMode) {
                         allInCorrectZone = false;
+                        incorrectColorBlocks++;
                         cube.userData.color = this.GRAY_COLOR;
                         this.applyColorToMesh(cube, this.GRAY_COLOR);
                         this.startFlashEffect(cube, false);
@@ -306,6 +311,20 @@ export class TetrisGame {
             this.badPieces++;
             if (typeof window.playIncorrectPieceSFX === 'function') {
                 window.playIncorrectPieceSFX();
+            }
+            
+            if(this.badPieces % 5 === 1 || incorrectColorBlocks > 1) {
+                // Select random notification text for misplaced block every 5 bad pieces or if there are more than 1 incorrect color blocks
+                const misplacedBlockNotificationTexts = [
+                    'Avoid outages. Stack wisely.',
+                    '[ALERT] Not enough caffeine detected…',
+                    'The cloud never sleeps — but you should.',
+                    'Compliance: The real final boss.'
+                ];
+                const randomText = misplacedBlockNotificationTexts[Math.floor(Math.random() * misplacedBlockNotificationTexts.length)];
+                
+                // Show footer notification for misplaced block
+                this.showFooterNotification(randomText);
             }
         }
         
@@ -356,6 +375,18 @@ export class TetrisGame {
                 
                 if (typeof window.playLineClearSFX === 'function') {
                     window.playLineClearSFX();
+                }
+
+                if(this.lines % 5 === 1) {
+                    // Select random notification text for line clear every 10 lines
+                    const lineClearNotificationTexts = [
+                        'Hybrid: because one cloud isn’t enough.',
+                        'Provisioning extra capacity',
+                    ];
+                    const randomText = lineClearNotificationTexts[Math.floor(Math.random() * lineClearNotificationTexts.length)];
+                    
+                    // Show footer notification for line clear
+                    this.showFooterNotification(randomText);
                 }
             }
             // }
@@ -572,10 +603,27 @@ export class TetrisGame {
                 const tempo = 1.0 + (this.level - 1) * 0.075;
                 window.setMusicTempo(tempo);
             }
+            
+            const levelUpNotificationTexts = [
+                'Auto-scaling your reflexes.',
+                'Achievement unlocked: Survived the expo floor.',
+                'Detected heavy AWS traffic — must be re:Invent week.'
+            ];
+            const randomText = levelUpNotificationTexts[Math.floor(Math.random() * levelUpNotificationTexts.length)];
+            this.showFooterNotification(randomText, 2500);
         }
         
         if (!this.isYellowMode && this.score - this.lastYellowModeScore >= this.YELLOW_MODE_THRESHOLD) {
             this.enterYellowMode();
+
+            const powerUpModeNotificationTexts = [
+                'Incident resolved. No ticket required.',
+                'Hybrid harmony achieved!',
+                'Lightedge Powerup engaged: restoring order to chaos.',
+                'You just reached 100% uptime. Don’t get used to it.'
+            ];
+            const randomText = powerUpModeNotificationTexts[Math.floor(Math.random() * powerUpModeNotificationTexts.length)];
+            this.showFooterNotification(randomText, 2500);
         }
     }
     
@@ -681,9 +729,76 @@ export class TetrisGame {
         });
     }
     
+    showFooterNotification(text, delay = 200, timeout = 3000) {
+        // Clear any existing timeout
+        if (this.footerNotificationTimeout) {
+            clearTimeout(this.footerNotificationTimeout);
+            this.footerNotificationTimeout = null;
+        }
+        
+        const footerNotification = document.getElementById('footer-notification');
+        if (!footerNotification) return;
+        
+        // Update the notification text if provided
+        if (text) {
+            const notificationTextElement = footerNotification.querySelector('.footer-notification-text');
+            if (notificationTextElement) {
+                notificationTextElement.textContent = text;
+            }
+        }
+        
+        // Hide notification immediately if it's currently showing (fade out first)
+        footerNotification.classList.remove('showing');
+        footerNotification.classList.add('hiding');
+        
+        // After fade out completes, hide display and prepare for next show
+        setTimeout(() => {
+            footerNotification.style.display = 'none';
+            footerNotification.classList.remove('hiding');
+            
+            // Show notification after delay
+            setTimeout(() => {
+                footerNotification.style.display = 'flex';
+                // Force reflow to ensure display change is applied before opacity transition
+                void footerNotification.offsetWidth;
+                footerNotification.classList.add('showing');
+                
+                // Hide notification after timeout (fade out)
+                this.footerNotificationTimeout = setTimeout(() => {
+                    footerNotification.classList.remove('showing');
+                    footerNotification.classList.add('hiding');
+                    
+                    // After fade out completes, hide display
+                    setTimeout(() => {
+                        footerNotification.style.display = 'none';
+                        footerNotification.classList.remove('hiding');
+                        this.footerNotificationTimeout = null;
+                    }, 400); // Match CSS transition duration
+                }, timeout);
+            }, delay);
+        }, 400); // Match CSS transition duration for fade out
+    }
+    
     endGame() {
         this.isGameOver = true;
         console.log('💀 Game Over');
+        
+        // Clear footer notification timeout if game ends
+        if (this.footerNotificationTimeout) {
+            clearTimeout(this.footerNotificationTimeout);
+            this.footerNotificationTimeout = null;
+        }
+        
+        // Hide footer notification on game over (with fade out)
+        const footerNotification = document.getElementById('footer-notification');
+        if (footerNotification) {
+            footerNotification.classList.remove('showing');
+            footerNotification.classList.add('hiding');
+            setTimeout(() => {
+                footerNotification.style.display = 'none';
+                footerNotification.classList.remove('hiding');
+            }, 400);
+        }
         
         if (typeof window.stopMusic === 'function') {
             window.stopMusic();
@@ -768,6 +883,23 @@ export class TetrisGame {
         }
         if (this.fallingCubes && this.fallingCubes.clear) {
             this.fallingCubes.clear();
+        }
+        
+        // Clear footer notification timeout
+        if (this.footerNotificationTimeout) {
+            clearTimeout(this.footerNotificationTimeout);
+            this.footerNotificationTimeout = null;
+        }
+        
+        // Hide footer notification on reset (with fade out)
+        const footerNotification = document.getElementById('footer-notification');
+        if (footerNotification) {
+            footerNotification.classList.remove('showing');
+            footerNotification.classList.add('hiding');
+            setTimeout(() => {
+                footerNotification.style.display = 'none';
+                footerNotification.classList.remove('hiding');
+            }, 400);
         }
         
         this.isInitialized = true;
