@@ -610,7 +610,7 @@ export class TetrisGame {
                 'Detected heavy AWS traffic — must be re:Invent week.'
             ];
             const randomText = levelUpNotificationTexts[Math.floor(Math.random() * levelUpNotificationTexts.length)];
-            this.showFooterNotification(randomText, 2500);
+            this.showFooterNotification(randomText, 4000);
         }
         
         if (!this.isYellowMode && this.score - this.lastYellowModeScore >= this.YELLOW_MODE_THRESHOLD) {
@@ -623,7 +623,7 @@ export class TetrisGame {
                 'You just reached 100% uptime. Don’t get used to it.'
             ];
             const randomText = powerUpModeNotificationTexts[Math.floor(Math.random() * powerUpModeNotificationTexts.length)];
-            this.showFooterNotification(randomText, 2500);
+            this.showFooterNotification(randomText, 4000);
         }
     }
     
@@ -729,7 +729,7 @@ export class TetrisGame {
         });
     }
     
-    showFooterNotification(text, delay = 200, timeout = 3000) {
+    showFooterNotification(text, delay = 200, timeout = 3500) {
         // Clear any existing timeout
         if (this.footerNotificationTimeout) {
             clearTimeout(this.footerNotificationTimeout);

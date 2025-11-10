@@ -166,9 +166,8 @@
   justify-content: space-between;
   gap: 30px;
   z-index: 101;
-  animation: footerNotificationFlash 2s ease-in-out infinite;
   opacity: 0;
-  transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .footer-notification.showing {
@@ -177,17 +176,6 @@
 
 .footer-notification.hiding {
   opacity: 0;
-}
-
-@keyframes footerNotificationFlash {
-  0%, 100% {
-    background: #dcee2d;
-    color: #000000;
-  }
-  50% {
-    background: #211F23;
-    color: #000000;
-  }
 }
 
 .footer-notification-text {
