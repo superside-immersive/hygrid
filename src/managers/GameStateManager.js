@@ -300,6 +300,10 @@ export class GameStateManager {
                     }
                     break;
                 }
+                default: {
+                    this.submitNameInput();
+                    break;
+                }
             }
         };
         document.addEventListener('keydown', this._nameInputKeyHandler);
