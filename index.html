@@ -190,27 +190,6 @@
     </div>
   </div>
 
-  <!-- Control de música por visibilidad del tab -->
-  <script>
-    var wasMusicPlayingBeforeHide = false;
-    
-    document.addEventListener('visibilitychange', function() {
-      if (document.hidden) {
-        // Tab oculto: pausar música
-        if (window.midiPlayer && window.musicStarted) {
-          wasMusicPlayingBeforeHide = true;
-          window.pauseMusic();
-        }
-      } else {
-        // Tab visible: reanudar música si estaba sonando
-        if (wasMusicPlayingBeforeHide) {
-          window.startMusic();
-          wasMusicPlayingBeforeHide = false;
-        }
-      }
-    });
-  </script>
-
   <!-- Cargar controladores y aplicación principal -->
   <script type="module" src="./src/ui/UIController.js"></script>
   <script type="module" src="./src/audio/AudioController.js"></script>

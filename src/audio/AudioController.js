@@ -21,6 +21,30 @@ export class AudioController {
       }
     };
     document.addEventListener('keydown', this._handleKeydown);
+
+    // Pausar y reanudar la música en eventos de visibilidad para evitar
+    // comportamientos extraños de los navegadores al cambiar de pestaña.
+    this._handleVisibility = () => {
+      if (!this.midiPlayer || !this.musicStarted || this.musicMuted) return;
+      if (document.hidden) {
+        try {
+          this.midiPlayer.pause();
+        } catch (err) {
+          console.warn('⚠️ No se pudo pausar música al ocultar pestaña', err);
+        }
+      } else {
+        try {
+          if (typeof this.midiPlayer.resume === 'function') {
+            this.midiPlayer.resume();
+          } else {
+            this.midiPlayer.play();
+          }
+        } catch (err) {
+          console.warn('⚠️ No se pudo reanudar música al volver a la pestaña', err);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', this._handleVisibility);
   }
 
   // === MIDI PLAYER ===
