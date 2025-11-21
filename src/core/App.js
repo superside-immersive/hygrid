@@ -1,6 +1,6 @@
 import * as THREE from '../three/three.module.js';
 import { TetrisGame } from './TetrisGame.js';
-import { IdleScene } from '../scenes/IdleScene.js';
+// import { IdleScene } from '../scenes/IdleScene.js';
 import { GameStateManager } from '../managers/GameStateManager.js';
 
 // ==================== MAIN APPLICATION ====================
@@ -29,11 +29,11 @@ export class App {
         window.tetrisGame = this.tetrisGame;
         
         // Create idle scene (needs tetrisGame reference)
-        this.idleScene = new IdleScene(this.scene, this.camera, this.tetrisGame);
-        window.idleScene = this.idleScene;
+        // this.idleScene = new IdleScene(this.scene, this.camera, this.tetrisGame);
+        // window.idleScene = this.idleScene;
         
         // Create state manager
-        this.gameStateManager = new GameStateManager(this.idleScene);
+        this.gameStateManager = new GameStateManager();
         window.gameStateManager = this.gameStateManager;
         
         // Input

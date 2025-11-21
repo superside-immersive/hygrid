@@ -1,15 +1,15 @@
 import { splitPaddedNumber } from '../utils/formatting.js';
 // ==================== GAME STATE MANAGER ====================
 export class GameStateManager {
-    constructor(idleScene) {
-        this.idleScene = idleScene;
+    constructor() {
+        // this.idleScene = idleScene;
         this.currentState = 'idle';
         this.stateTimer = 0;
         this.scoreboardTimer = 0;
         this.isShowingScoreboard = false;
         
         this.introDuration = 3;
-        this.scoreboardShowInterval = 10;
+        this.scoreboardShowInterval = 7.5;
         this.scoreboardDisplayDuration = 5;
         this.gameOverDisplayDuration = 5;
         
@@ -29,6 +29,7 @@ export class GameStateManager {
     
     initializeDOMElements() {
         this.idleScreen = document.getElementById('idle-screen');
+        this.idleVideo = document.getElementById('idle-video');
         this.introScreen = document.getElementById('intro-screen');
         this.gameOverScreen = document.getElementById('gameover-screen');
         this.scoreboardScreen = document.getElementById('scoreboard-screen');
@@ -181,19 +182,26 @@ export class GameStateManager {
     showIdleScreen() {
         this.hideGameUI();
         if (this.idleScreen) this.idleScreen.style.display = 'flex';
-        if (this.idleScene) this.idleScene.show();
+        // Restart video when idle screen is shown
+        if (this.idleVideo) {
+            this.idleVideo.currentTime = 0;
+            this.idleVideo.play().catch(err => {
+                console.warn('Error playing idle video:', err);
+            });
+        }
+        //if (this.idleScene) this.idleScene.show();
     }
     
     showIntroScreen() {
         this.showGameUI();
         if (this.introScreen) this.introScreen.style.display = 'flex';
         this.showCountdown();
-        if (this.idleScene) this.idleScene.hide();
+        // if (this.idleScene) this.idleScene.hide();
     }
     
     showGameScreen() {
         this.showGameUI();
-        if (this.idleScene) this.idleScene.hide();
+        // if (this.idleScene) this.idleScene.hide();
     }
     
     showGameOverScreen() {
@@ -338,14 +346,21 @@ export class GameStateManager {
             this.updateScoreboardDisplay();
         }
         // Activar escena idle para ocultar grid y mostrar cubos cayendo
-        if (this.idleScene && !this.idleScene.isActive) {
-            this.idleScene.show();
-        }
+        // if (this.idleScene && !this.idleScene.isActive) {
+        //     this.idleScene.show();
+        // }
     }
     
     hideScoreboard() {
         this.isShowingScoreboard = false;
         if (this.scoreboardScreen) this.scoreboardScreen.style.display = 'none';
+        // Restart video when scoreboard is hidden and idle screen becomes visible again
+        if (this.idleVideo) {
+            this.idleVideo.currentTime = 0;
+            this.idleVideo.play().catch(err => {
+                console.warn('Error playing idle video:', err);
+            });
+        }
     }
     
     showCountdown() {

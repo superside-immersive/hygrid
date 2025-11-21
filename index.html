@@ -110,6 +110,9 @@
     <div class="overlay-screens">
       <!-- IDLE -->
       <div id="idle-screen" class="screen">
+        <video id="idle-video" class="idle-video" muted playsinline>
+          <source src="./assets/videos/idle-background.mp4" type="video/mp4">
+        </video>
         <img src="./assets/images/logo.png" alt="Cloud Stacker" class="idle-logo">
         <div class="idle-text">
           <span>Press any key to play</span>
@@ -176,7 +179,7 @@
       <div id="scoreboard-screen" class="screen solid-bg">
         <div class="overlay-top-title"><img src="./assets/images/logo.png" alt="Cloud Stacker" class="overlay-top-logo"></div>
         <div id="scoreboard-list" class="scoreboard-list"></div>
-        <div class="scoreboard-hint">Press any key to continue</div>
+        <div class="scoreboard-hint">Press any key to play</div>
         <div class="lightedge-footer">
           <img class="lightedge-logo-full" src="./assets/images/lightedge-footer.svg" alt="LightEdge Footer">
         </div>
