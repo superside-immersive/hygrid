@@ -62,9 +62,18 @@
 }
 
 #idle-screen .idle-logo {
-  height: 200px;
+  height: 160px;
   width: auto;
-  animation: floatLogo 3s ease-in-out infinite;
+  animation: moveLogoToTop 4s ease-out forwards, floatLogo 3s ease-in-out 4s infinite;
+}
+
+@keyframes moveLogoToTop {
+  0%, 88.9% {
+    transform: translateY(100px); /* Start more centered/offset down, stay until ~4s */
+  }
+  100% {
+    transform: translateY(0); /* Move to final position at 4s, matches floatLogo starting point */
+  }
 }
 
 #idle-screen .idle-text {
@@ -83,6 +92,17 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
+  opacity: 0;
+  animation: fadeInIdleText 0.5s ease-in 4s forwards;
+}
+
+@keyframes fadeInIdleText {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 #idle-screen .idle-text .continue-icon {

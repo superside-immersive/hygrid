@@ -9,7 +9,7 @@ export class GameStateManager {
         this.isShowingScoreboard = false;
         
         this.introDuration = 3;
-        this.scoreboardShowInterval = 7.5;
+        this.scoreboardShowInterval = 9;
         this.scoreboardDisplayDuration = 5;
         this.gameOverDisplayDuration = 5;
         
@@ -30,6 +30,8 @@ export class GameStateManager {
     initializeDOMElements() {
         this.idleScreen = document.getElementById('idle-screen');
         this.idleVideo = document.getElementById('idle-video');
+        this.idleText = this.idleScreen?.querySelector('.idle-text');
+        this.idleLogo = this.idleScreen?.querySelector('.idle-logo');
         this.introScreen = document.getElementById('intro-screen');
         this.gameOverScreen = document.getElementById('gameover-screen');
         this.scoreboardScreen = document.getElementById('scoreboard-screen');
@@ -179,16 +181,47 @@ export class GameStateManager {
         if (this.gameFooter) this.gameFooter.style.display = 'none';
     }
     
-    showIdleScreen() {
-        this.hideGameUI();
-        if (this.idleScreen) this.idleScreen.style.display = 'flex';
-        // Restart video when idle screen is shown
+    restartIdleTextAnimation() {
+        if (!this.idleText) return;
+        // Restart animation by removing and re-adding it
+        const element = this.idleText;
+        element.style.animation = 'none';
+        // Force a reflow
+        void element.offsetHeight;
+        // Re-add the animation
+        element.style.animation = '';
+    }
+    
+    restartIdleLogoAnimation() {
+        if (!this.idleLogo) return;
+        // Restart animation by removing and re-adding it
+        const element = this.idleLogo;
+        element.style.animation = 'none';
+        // Force a reflow
+        void element.offsetHeight;
+        // Re-add the animation
+        element.style.animation = '';
+    }
+    
+    restartIdleScreen() {
+        // Restart video
         if (this.idleVideo) {
             this.idleVideo.currentTime = 0;
             this.idleVideo.play().catch(err => {
                 console.warn('Error playing idle video:', err);
             });
         }
+        // Restart the idle text fade-in animation
+        this.restartIdleTextAnimation();
+        // Restart the idle logo animation
+        this.restartIdleLogoAnimation();
+    }
+    
+    showIdleScreen() {
+        this.hideGameUI();
+        if (this.idleScreen) this.idleScreen.style.display = 'flex';
+        // Restart video and text animation when idle screen is shown
+        this.restartIdleScreen();
         //if (this.idleScene) this.idleScene.show();
     }
     
@@ -354,13 +387,8 @@ export class GameStateManager {
     hideScoreboard() {
         this.isShowingScoreboard = false;
         if (this.scoreboardScreen) this.scoreboardScreen.style.display = 'none';
-        // Restart video when scoreboard is hidden and idle screen becomes visible again
-        if (this.idleVideo) {
-            this.idleVideo.currentTime = 0;
-            this.idleVideo.play().catch(err => {
-                console.warn('Error playing idle video:', err);
-            });
-        }
+        // Restart idle screen (video and text animation) when scoreboard is hidden
+        this.restartIdleScreen();
     }
     
     showCountdown() {
