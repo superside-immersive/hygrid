@@ -199,12 +199,14 @@ export class AudioController {
 
   setMusicTempo(tempo) {
     this.musicTempo = tempo;
-    
-    if (!this.midiPlayer || !this.musicStarted) return;
-    
+
+    if (!this.midiPlayer || typeof this.midiPlayer.setTempo !== 'function') {
+      return;
+    }
+
     try {
       this.midiPlayer.setTempo(tempo);
-      console.log(`🎵 Tempo cambiado a ${tempo}x`);
+      console.log(`🎵 Tempo cambiado a ${tempo}x (musicStarted=${this.musicStarted})`);
     } catch (error) {
       console.error('❌ Error cambiando tempo:', error);
     }
